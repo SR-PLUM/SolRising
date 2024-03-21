@@ -37,7 +37,7 @@ AGun::AGun()
 		}
 	}
 
-	switch (dis(gen))	//TODO case¸¦ enum°ªÀ¸·Î ¹Ù²Ù±â EGN
+	switch (dis(gen))	//TODO caseë¥¼ enumê°’ìœ¼ë¡œ ë°”ê¾¸ê¸° EGN
 	{
 	case 0:
 		damage = M416Damage;
@@ -165,7 +165,7 @@ void AGun::Fire()
 	case E_FireMethod::EFM_Full_Auto:
 		isFiring = true;
 		OnFire();
-		GetWorld()->GetTimerManager().SetTimer(fireTimer, this, &AGun::OnFire, float(RPM/30), true); // 0.*f : ¿¬»çÀ², true : ¹Ýº¹
+		GetWorld()->GetTimerManager().SetTimer(fireTimer, this, &AGun::OnFire, float(RPM/30), true); // 0.*f : ì—°ì‚¬ìœ¨, true : ë°˜ë³µ
 		break;
 	}
 		
