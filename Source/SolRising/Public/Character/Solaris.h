@@ -31,9 +31,30 @@ public:
 	UFUNCTION()
 	void LookUp(float Value);
 
+	UFUNCTION()
+	void Pick();
+
 private:
+	UPROPERTY(VisibleAnywhere)
+	class USphereComponent* SphereComponent;
 	UPROPERTY(VisibleAnywhere)
 	class USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* ViewCamera;
+
+	UPROPERTY()
+	TArray<class AItem*> OverlappedItem;
+
+	UPROPERTY(VisibleAnywhere)
+	class AGun* MainGun = nullptr;
+	UPROPERTY(VisibleAnywhere)
+	class AGun* SubGun = nullptr;
+
+public:
+	UFUNCTION()
+	void OnItemBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnItemEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	AGun* GetMainGun();
 };

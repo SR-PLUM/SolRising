@@ -29,4 +29,7 @@ public:
 	void LookUp(float Value);
 	void Jump();
 
+	void Fire();
+	void Interaction();
+
 };

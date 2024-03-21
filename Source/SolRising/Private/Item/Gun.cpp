@@ -23,18 +23,24 @@ AGun::AGun()
 	{
 		InteractionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 		InteractionComponent->InitSphereRadius(5.0f);
-		RootComponent = InteractionComponent;
+		InteractionComponent->SetupAttachment(RootComponent);
+		//RootComponent = InteractionComponent;
 	}
 	if (!GunMesh)
 	{
 		GunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
-		GunMesh->SetupAttachment(InteractionComponent);
+		GunMesh->SetupAttachment(RootComponent);
 
 		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("GunMeshPath"));
 		if (Mesh.Succeeded())
 		{
 			GunMesh->SetStaticMesh(Mesh.Object);
 		}
+	}
+	if (!MuzzleLocation)
+	{
+		MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
+		MuzzleLocation->SetupAttachment(RootComponent);
 	}
 
 	switch (dis(gen))	//TODO case를 enum값으로 바꾸기 EGN
@@ -103,6 +109,9 @@ void AGun::SelectiveFire()
 
 void AGun::OnFire()
 {
+	UE_LOG(LogTemp, Warning, TEXT("In OnFire"));
+	loadedAmmo = 30;
+
 	if (loadedAmmo <= 0 || isReloading == true || canFire == false) { return; }
 
 	loadedAmmo -= 1;
@@ -156,9 +165,11 @@ void AGun::OnFire()
 
 void AGun::Fire()
 {
+	UE_LOG(LogTemp, Warning, TEXT("In Fire"))
 	switch (currentFireMethod)
 	{
 	case E_FireMethod::EFM_Semi_Auto:
+		UE_LOG(LogTemp, Warning, TEXT("In Semi Auto"))
 		isFiring = true;
 		OnFire();
 		break;
