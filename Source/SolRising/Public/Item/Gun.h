@@ -6,9 +6,21 @@
 #include "Item/Item.h"
 #include "Gun.generated.h"
 
-/**
- * 
- */
+UENUM(BlueprintType)
+enum class E_GunName : uint8
+{
+	EGN_M416 UMETA(DisplayName = "M416"),
+	EGN_SCAR UMETA(DisplayName = "SCAR"),
+	EGN_AK47 UMETA(DisplayName = "AK47"),
+};
+
+UENUM(BlueprintType)
+enum E_FireMethod : uint8
+{
+	EFM_Semi_Auto UMETA(DisplayName = "Semi Auto"),
+	EFM_Full_Auto UMETA(DisplayName = "Full Auto"),
+};
+
 UCLASS()
 class SOLRISING_API AGun : public AItem
 {
@@ -33,14 +45,6 @@ private:
 		class UStaticMeshComponent* GunMesh;
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 		USceneComponent* MuzzleLocation;
-
-private:
-	enum E_GunName
-	{
-		M416 = 0,
-		SCAR = 1,
-		AK47 = 2,
-	};
 
 private:					
 	//M416
@@ -80,13 +84,7 @@ private:
 		UAnimMontage* AK47FireAnimation;
 
 public:
-	enum E_FireMethod
-	{
-		Semi_Auto = 0,
-		Full_Auto = 1,
-	};
-
-	E_FireMethod currentFireMethod = E_FireMethod::Semi_Auto;
+	E_FireMethod currentFireMethod = E_FireMethod::EFM_Semi_Auto;
 
 protected:
 	float damage;

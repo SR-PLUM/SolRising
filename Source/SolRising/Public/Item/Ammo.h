@@ -6,9 +6,13 @@
 #include "Item/Item.h"
 #include "Ammo.generated.h"
 
-/**
- * 
- */
+UENUM(BlueprintType)
+enum class E_AmmoType : uint8
+{
+	EAT_5 UMETA(DisplayName = "5.56mm Ammo"),
+	EAT_7 UMETA(DisplayName = "7.62mm Ammo"),
+};
+
 UCLASS()
 class SOLRISING_API AAmmo : public AItem
 {
@@ -31,11 +35,4 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* AmmoMesh;
-
-private:
-	enum E_AmmoType
-	{
-		five = 0,
-		seven = 1,
-	};
 };

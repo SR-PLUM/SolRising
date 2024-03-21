@@ -37,9 +37,9 @@ AGun::AGun()
 		}
 	}
 
-	switch (dis(gen))
+	switch (dis(gen))	//TODO case를 enum값으로 바꾸기 EGN
 	{
-	case E_GunName::M416:
+	case 0:
 		damage = M416Damage;
 		RPM = M416RPM;
 		verticalRecoil = M416VerticalRecoil;
@@ -47,7 +47,7 @@ AGun::AGun()
 		FireSound = M416FireSound;
 		FireAnimation = M416FireAnimation;
 		break;
-	case E_GunName::SCAR:
+	case 1:
 		damage = SCARDamage;
 		RPM = SCARRPM;
 		verticalRecoil = SCARVerticalRecoil;
@@ -55,7 +55,7 @@ AGun::AGun()
 		FireSound = SCARFireSound;
 		FireAnimation = SCARFireAnimation;
 		break;
-	case E_GunName::AK47:
+	case 2:
 		damage = AK47Damage;
 		RPM = AK47RPM;
 		verticalRecoil = AK47VerticalRecoil;
@@ -90,11 +90,11 @@ void AGun::SelectiveFire()
 {
 	switch (currentFireMethod)
 	{
-	case AGun::Semi_Auto:
-		currentFireMethod = E_FireMethod::Full_Auto;
+	case E_FireMethod::EFM_Semi_Auto:
+		currentFireMethod = E_FireMethod::EFM_Full_Auto;
 		break;
-	case AGun::Full_Auto:
-		currentFireMethod = E_FireMethod::Semi_Auto;
+	case E_FireMethod::EFM_Full_Auto:
+		currentFireMethod = E_FireMethod::EFM_Semi_Auto;
 		break;
 	default:
 		break;
@@ -158,11 +158,11 @@ void AGun::Fire()
 {
 	switch (currentFireMethod)
 	{
-	case E_FireMethod::Semi_Auto:
+	case E_FireMethod::EFM_Semi_Auto:
 		isFiring = true;
 		OnFire();
 		break;
-	case E_FireMethod::Full_Auto:
+	case E_FireMethod::EFM_Full_Auto:
 		isFiring = true;
 		OnFire();
 		GetWorld()->GetTimerManager().SetTimer(fireTimer, this, &AGun::OnFire, float(RPM/30), true); // 0.*f : 연사율, true : 반복
