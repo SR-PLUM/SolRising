@@ -25,7 +25,13 @@ void USolarisAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 	if (SolarisMovement)
 	{
-		GroundSpeed = UKismetMathLibrary::VSizeXY(SolarisMovement->Velocity);
+		auto velocity = SolarisMovement->Velocity;
+
+		GroundSpeed = UKismetMathLibrary::VSizeXY(velocity);
+
+		auto rotation = Solaris->GetActorRotation();
+		Direction = CalculateDirection(velocity, rotation);
+
 		IsFalling = SolarisMovement->IsFalling();
 	}
 
@@ -34,10 +40,12 @@ void USolarisAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		if (Solaris->GetMainGun())
 		{
 			IsEquippedGun = true;
+			Solaris->bUseControllerRotationYaw = true;
 		}
 		else
 		{
 			IsEquippedGun = false;
+			Solaris->bUseControllerRotationYaw = false;
 		}
 	}
 }
