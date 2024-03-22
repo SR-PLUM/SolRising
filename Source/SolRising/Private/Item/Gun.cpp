@@ -15,9 +15,22 @@ AGun::AGun()
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> dis(0, 2);
 
+	if (!GunMesh)
+	{
+		GunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
+
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("GunMeshPath"));
+		if (Mesh.Succeeded())
+		{
+			GunMesh->SetStaticMesh(Mesh.Object);
+		}
+
+		RootComponent = GunMesh;
+	}
 	if (!RootComponent)
 	{
-		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
+		auto SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
+		SceneComponent->SetupAttachment(RootComponent);
 	}
 	if (!InteractionComponent)
 	{
@@ -25,17 +38,6 @@ AGun::AGun()
 		InteractionComponent->InitSphereRadius(5.0f);
 		InteractionComponent->SetupAttachment(RootComponent);
 		//RootComponent = InteractionComponent;
-	}
-	if (!GunMesh)
-	{
-		GunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
-		GunMesh->SetupAttachment(RootComponent);
-
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("GunMeshPath"));
-		if (Mesh.Succeeded())
-		{
-			GunMesh->SetStaticMesh(Mesh.Object);
-		}
 	}
 	if (!MuzzleLocation)
 	{
@@ -227,4 +229,10 @@ void AGun::ReloadDelay()
 
 void AGun::Aiming()
 {
+}
+
+void AGun::AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName)
+{
+	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+	GunMesh->AttachToComponent(InParent, TransformRules, SocketName);
 }

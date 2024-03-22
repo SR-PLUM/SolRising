@@ -28,4 +28,16 @@ void USolarisAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		GroundSpeed = UKismetMathLibrary::VSizeXY(SolarisMovement->Velocity);
 		IsFalling = SolarisMovement->IsFalling();
 	}
+
+	if (Solaris)
+	{
+		if (Solaris->GetMainGun())
+		{
+			IsEquippedGun = true;
+		}
+		else
+		{
+			IsEquippedGun = false;
+		}
+	}
 }
