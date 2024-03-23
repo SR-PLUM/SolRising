@@ -46,6 +46,10 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 		USceneComponent* MuzzleLocation;
 
+public:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AAmmoProjectile> AmmoProjectileActor;
+
 private:					
 	//M416
 	float M416Damage;

@@ -3,6 +3,7 @@
 #include "Item/Gun.h"
 #include "Components/SphereComponent.h"
 #include "kismet/GameplayStatics.h"
+#include "Projectile/AmmoProjectile.h"
 
 #include <random>
 
@@ -109,7 +110,6 @@ void AGun::SelectiveFire()
 
 void AGun::OnFire()
 {
-	UE_LOG(LogTemp, Warning, TEXT("In OnFire"));
 	loadedAmmo = 30;
 
 	if (loadedAmmo <= 0 || isReloading == true || canFire == false) { return; }
@@ -122,26 +122,18 @@ void AGun::OnFire()
 	{
 		FRotator SpawnRotation = GetActorRotation();
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		FVector SpawnLocation = ((MuzzleLocation != nullptr) ? MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+		FVector SpawnLocation = MuzzleLocation->GetComponentLocation();
 		FHitResult hit;
 
+		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(SpawnLocation);
+		SpawnTransform.SetRotation(SpawnRotation.Quaternion());
 
-		FVector Start = SpawnLocation;
-		FVector End;
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		End = Start + (SpawnRotation.Vector() * TraceDistance);
-
-		FCollisionQueryParams TraceParams;
-		TraceParams.AddIgnoredActor(this);
-		bool bHit = World->LineTraceSingleByChannel(hit, Start, End, ECC_Visibility, TraceParams);
-
-		DrawDebugLine(World, Start, End, FColor::Blue, false, 2.0f);
-
-		if (bHit)
-		{
-			UE_LOG(LogTemp, Log, TEXT("%s"), *hit.GetActor()->GetName());
-			DrawDebugBox(World, hit.ImpactPoint, FVector(5, 5, 5), FColor::Emerald, false, 2.0f);
-		}
+		World->SpawnActor<AAmmoProjectile>(AmmoProjectileActor, SpawnTransform, SpawnParams);
 	}
 
 	// try and play the sound if specified
@@ -150,26 +142,14 @@ void AGun::OnFire()
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
 
-	//if (FireAnimation != nullptr)
-	//{
-	//	// Get the animation object for the arms mesh
-	//	UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-	//	if (AnimInstance != nullptr)
-	//	{
-	//		AnimInstance->Montage_Play(FireAnimation, 1.f);
-	//	}
-	//}
-
 	GetWorld()->GetTimerManager().SetTimer(fireTimer, this, &AGun::FireCooldown, float(RPM / 60), false);
 }
 
 void AGun::Fire()
 {
-	UE_LOG(LogTemp, Warning, TEXT("In Fire"))
 	switch (currentFireMethod)
 	{
 	case E_FireMethod::EFM_Semi_Auto:
-		UE_LOG(LogTemp, Warning, TEXT("In Semi Auto"))
 		isFiring = true;
 		OnFire();
 		break;
