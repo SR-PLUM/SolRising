@@ -107,7 +107,7 @@ void ASolaris::Pick()
 		if (MainGun == nullptr)
 		{
 			MainGun = gun;
-			//TODO 소켓에 장착
+			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
 			UE_LOG(LogTemp, Warning, TEXT("총 장착"))
 		}
 		else if (SubGun == nullptr)
@@ -122,9 +122,8 @@ void ASolaris::Pick()
 			// 메인건을 바닥으로 버림
 			// OverlappedItem에 메인건 추가
 			MainGun = gun;
-			// 소켓에 장착
+			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
 		}
-		//TODO 바닥의 GUN 제거
 	}
 }
 

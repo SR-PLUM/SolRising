@@ -28,5 +28,11 @@ public:
 	float GroundSpeed;
 
 	UPROPERTY(BlueprintReadOnly, Category = Movement)
+	float Direction;
+
+	UPROPERTY(BlueprintReadOnly, Category = Movement)
 	bool IsFalling;
+
+	UPROPERTY(BlueprintReadOnly, Category = State)
+	bool IsEquippedGun;
 };
