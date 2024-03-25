@@ -4,6 +4,8 @@
 #include "Components/SphereComponent.h"
 #include "kismet/GameplayStatics.h"
 #include "Projectile/AmmoProjectile.h"
+#include "Character/Solaris.h"
+#include "Camera/CameraComponent.h"
 
 #include <random>
 
@@ -119,13 +121,25 @@ void AGun::OnFire()
 	loadedAmmo -= 1;
 	UE_LOG(LogTemp, Log, TEXT("Current Ammo : %d / %d"), loadedAmmo, remainAmmo);
 
+	if (!OwningCharacter) { return; }
+
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
 	{
 		FRotator SpawnRotation = GetActorRotation();
-		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
 		FVector SpawnLocation = MuzzleLocation->GetComponentLocation();
-		FHitResult hit;
+
+		//Tracing Camera Aim
+		FHitResult CameraHit;
+		FVector StartCameraTrace = OwningCharacter->GetCameraLocation();
+		FVector EndCameraTrace = StartCameraTrace + (OwningCharacter->GetCameraRotation().Vector() * TraceDistance);
+		ECollisionChannel ECC_CameraHit = ECC_Visibility;
+		bool bIsHitCamera = World->LineTraceSingleByChannel(CameraHit, StartCameraTrace, EndCameraTrace, ECC_CameraHit);
+		if (bIsHitCamera)
+		{
+			SpawnRotation = (CameraHit.Location - MuzzleLocation->GetComponentLocation()).Rotation();
+			DrawDebugLine(World, StartCameraTrace, EndCameraTrace, FColor::Red, false, 2.f);
+		}
 
 		FActorSpawnParameters SpawnParams;
 		FTransform SpawnTransform;
@@ -215,4 +229,9 @@ void AGun::AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName
 {
 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 	GunMesh->AttachToComponent(InParent, TransformRules, SocketName);
+}
+
+void AGun::SetOwningCharacter(ASolaris* owningCharacter)
+{
+	OwningCharacter = owningCharacter;
 }

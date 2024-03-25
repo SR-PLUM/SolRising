@@ -57,4 +57,7 @@ public:
 	void OnItemEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	AGun* GetMainGun();
+
+	FVector GetCameraLocation();
+	FRotator GetCameraRotation();
 };
