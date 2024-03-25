@@ -107,7 +107,8 @@ void ASolaris::Pick()
 		if (MainGun == nullptr)
 		{
 			MainGun = gun;
-			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
+			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
+			MainGun->SetOwningCharacter(this);
 			UE_LOG(LogTemp, Warning, TEXT("총 장착"))
 		}
 		else if (SubGun == nullptr)
@@ -122,7 +123,8 @@ void ASolaris::Pick()
 			// 메인건을 바닥으로 버림
 			// OverlappedItem에 메인건 추가
 			MainGun = gun;
-			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
+			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
+			MainGun->SetOwningCharacter(this);
 		}
 	}
 }
@@ -149,5 +151,21 @@ AGun* ASolaris::GetMainGun()
 		return MainGun;
 
 	return nullptr;
+}
+
+FVector ASolaris::GetCameraLocation()
+{
+	if (!ViewCamera)
+		return FVector();
+
+	return ViewCamera->GetComponentLocation();
+}
+
+FRotator ASolaris::GetCameraRotation()
+{
+	if(!ViewCamera)
+		return FRotator();
+
+	return ViewCamera->GetComponentRotation();
 }
 

@@ -115,6 +115,9 @@ private:
 
 	FVector GunOffset = FVector(100.0f, 0.0f, 10.0f);
 
+	UPROPERTY()
+	class ASolaris* OwningCharacter;
+
 private:
 	FTimerHandle reloadTimer;
 	FTimerHandle fireTimer;
@@ -129,4 +132,5 @@ public:
 	void ReloadDelay();
 	void Aiming();
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName);
+	void SetOwningCharacter(ASolaris* owningCharacter);
 };
