@@ -14,6 +14,8 @@ AGun::AGun()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	weight = 0;
+
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> dis(0, 2);
@@ -93,10 +95,6 @@ void AGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void AGun::Picked()
-{
 }
 
 void AGun::SelectiveFire()

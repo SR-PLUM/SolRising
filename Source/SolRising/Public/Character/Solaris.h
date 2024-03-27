@@ -49,6 +49,8 @@ private:
 	class AGun* MainGun = nullptr;
 	UPROPERTY(VisibleAnywhere)
 	class AGun* SubGun = nullptr;
+	UPROPERTY(VisibleAnywhere)
+	class ABag* Bag = nullptr;
 
 public:
 	UFUNCTION()
