@@ -48,9 +48,11 @@ AGun::AGun()
 		MuzzleLocation->SetupAttachment(RootComponent);
 	}
 
-	switch (dis(gen))	//TODO case를 enum값으로 바꾸기 EGN
+	int gunName_gen = dis(gen);
+
+	switch (gunName_gen)	//TODO case를 enum값으로 바꾸기 EGN
 	{
-	case 0:
+	case static_cast<int>(E_GunName::EGN_M416):
 		damage = M416Damage;
 		RPM = M416RPM;
 		verticalRecoil = M416VerticalRecoil;
@@ -58,7 +60,7 @@ AGun::AGun()
 		FireSound = M416FireSound;
 		FireAnimation = M416FireAnimation;
 		break;
-	case 1:
+	case static_cast<int>(E_GunName::EGN_SCAR):
 		damage = SCARDamage;
 		RPM = SCARRPM;
 		verticalRecoil = SCARVerticalRecoil;
@@ -66,7 +68,7 @@ AGun::AGun()
 		FireSound = SCARFireSound;
 		FireAnimation = SCARFireAnimation;
 		break;
-	case 2:
+	case static_cast<int>(E_GunName::EGN_AK47):
 		damage = AK47Damage;
 		RPM = AK47RPM;
 		verticalRecoil = AK47VerticalRecoil;
