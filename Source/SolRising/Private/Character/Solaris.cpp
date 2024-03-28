@@ -10,6 +10,8 @@
 
 #include "Item/Item.h"
 #include "Item/Gun.h"
+#include "Item/Bag.h"
+#include "Item/Ammo.h"
 
 ASolaris::ASolaris()
 {
@@ -126,6 +128,27 @@ void ASolaris::Pick()
 			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
 			MainGun->SetOwningCharacter(this);
 		}
+	}
+
+	ABag* bag = Cast<ABag>(pickedItem);
+	if (bag)
+	{
+		if (Bag == nullptr)
+		{
+			Bag = bag;
+			//TODO 소켓 장착
+		}
+	}
+
+	AAmmo* ammo = Cast<AAmmo>(pickedItem);
+	if (ammo && Bag != nullptr)
+	{
+		if (Bag->CanPick(ammo->weight))
+		{
+			Bag->currentWeight += ammo->weight;
+			Bag->AddItem(pickedItem);
+			Bag->AddAmmoCount(ammo->ammoType_gen, ammo->count);
+		}			
 	}
 }
 
