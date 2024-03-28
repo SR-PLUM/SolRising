@@ -133,7 +133,7 @@ void ASolaris::Pick()
 	ABag* bag = Cast<ABag>(pickedItem);
 	if (bag)
 	{
-		if (Bag = nullptr)
+		if (Bag == nullptr)
 		{
 			Bag = bag;
 			//TODO 소켓 장착
