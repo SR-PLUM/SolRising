@@ -33,6 +33,10 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* AmmoMesh;
+	UPROPERTY(EditAnywhere)
+		class UStaticMesh* EAT_5Mesh;
+	UPROPERTY(EditAnywhere)
+		class UStaticMesh* EAT_7Mesh;
 
 public:
 	int32 count;

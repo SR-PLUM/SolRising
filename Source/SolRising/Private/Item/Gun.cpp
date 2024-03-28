@@ -46,11 +46,11 @@ AGun::AGun()
 		MuzzleLocation->SetupAttachment(RootComponent);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/FPS_Weapon_Bundle/Weapons/Meshes/AR4/SM_AR4"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/SM_M416"));
 	M416Mesh = Mesh1.Object;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/FPS_Weapon_Bundle/Weapons/Meshes/KA74U/SM_KA74U_X"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/SM_AK74U"));
 	AK74UMesh = Mesh2.Object;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/FPS_Weapon_Bundle/Weapons/Meshes/Ka47/SM_KA47"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/Blueprints/Item/SM_AK47"));
 	AK47Mesh = Mesh3.Object;	
 }
 
@@ -65,7 +65,7 @@ void AGun::BeginPlay()
 
 	int gunName_gen = dis(gen);
 
-	switch (gunName_gen)	//TODO case를 enum값으로 바꾸기 EGN
+	switch (gunName_gen)
 	{
 	case static_cast<int>(E_GunName::EGN_M416):
 
