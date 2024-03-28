@@ -50,7 +50,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	class AGun* SubGun = nullptr;
 	UPROPERTY(VisibleAnywhere)
-	class ABag* Bag = nullptr;
+	class ABag* Bag;
 
 public:
 	UFUNCTION()

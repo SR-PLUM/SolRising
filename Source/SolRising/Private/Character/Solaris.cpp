@@ -32,6 +32,8 @@ ASolaris::ASolaris()
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	SphereComponent->SetupAttachment(GetRootComponent());
+
+	Bag = CreateDefaultSubobject<ABag>(TEXT("Bag"));
 }
 
 void ASolaris::BeginPlay()
@@ -133,7 +135,7 @@ void ASolaris::Pick()
 	ABag* bag = Cast<ABag>(pickedItem);
 	if (bag)
 	{
-		if (Bag == nullptr)
+		if (Bag == nullptr || Bag->GetMaxWeight() == Bag->baseMaxWeight)
 		{
 			Bag = bag;
 			//TODO 소켓 장착
@@ -143,12 +145,25 @@ void ASolaris::Pick()
 	AAmmo* ammo = Cast<AAmmo>(pickedItem);
 	if (ammo && Bag != nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("ammo 이며 bag 있음"))
 		if (Bag->CanPick(ammo->weight))
 		{
 			Bag->currentWeight += ammo->weight;
 			Bag->AddItem(pickedItem);
 			Bag->AddAmmoCount(ammo->ammoType_gen, ammo->count);
+
+			ammo->Destroy();
+
+			UE_LOG(LogTemp, Warning, TEXT("총알 획득 현재 용량 : %f / %f"), Bag->currentWeight, Bag->GetMaxWeight())
 		}			
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("총알 획득 실패"))
+		}
+	}
+	else if (Bag == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Bag 없음"))
 	}
 }
 
