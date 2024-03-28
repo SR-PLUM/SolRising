@@ -16,10 +16,6 @@ AGun::AGun()
 
 	weight = 0;
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dis(0, 2);
-
 	if (!GunMesh)
 	{
 		GunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
@@ -50,11 +46,34 @@ AGun::AGun()
 		MuzzleLocation->SetupAttachment(RootComponent);
 	}
 
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/FPS_Weapon_Bundle/Weapons/Meshes/AR4/SM_AR4"));
+	M416Mesh = Mesh1.Object;
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/FPS_Weapon_Bundle/Weapons/Meshes/KA74U/SM_KA74U_X"));
+	AK74UMesh = Mesh2.Object;
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/FPS_Weapon_Bundle/Weapons/Meshes/Ka47/SM_KA47"));
+	AK47Mesh = Mesh3.Object;	
+}
+
+// Called when the game starts or when spawned
+void AGun::BeginPlay()
+{
+	Super::BeginPlay();
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(0, 2);
+
 	int gunName_gen = dis(gen);
 
 	switch (gunName_gen)	//TODO case를 enum값으로 바꾸기 EGN
 	{
 	case static_cast<int>(E_GunName::EGN_M416):
+
+		if (M416Mesh)
+		{
+			GunMesh->SetStaticMesh(M416Mesh);
+		}
+
 		damage = M416Damage;
 		RPM = M416RPM;
 		verticalRecoil = M416VerticalRecoil;
@@ -62,7 +81,13 @@ AGun::AGun()
 		FireSound = M416FireSound;
 		FireAnimation = M416FireAnimation;
 		break;
-	case static_cast<int>(E_GunName::EGN_SCAR):
+	case static_cast<int>(E_GunName::EGN_AK74U):
+
+		if (AK74UMesh)
+		{
+			GunMesh->SetStaticMesh(AK74UMesh);
+		}
+
 		damage = SCARDamage;
 		RPM = SCARRPM;
 		verticalRecoil = SCARVerticalRecoil;
@@ -71,6 +96,12 @@ AGun::AGun()
 		FireAnimation = SCARFireAnimation;
 		break;
 	case static_cast<int>(E_GunName::EGN_AK47):
+
+		if (AK47Mesh)
+		{
+			GunMesh->SetStaticMesh(AK47Mesh);
+		}
+
 		damage = AK47Damage;
 		RPM = AK47RPM;
 		verticalRecoil = AK47VerticalRecoil;
@@ -81,12 +112,6 @@ AGun::AGun()
 	default:
 		break;
 	}
-}
-
-// Called when the game starts or when spawned
-void AGun::BeginPlay()
-{
-	Super::BeginPlay();
 
 }
 

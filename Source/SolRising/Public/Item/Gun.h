@@ -10,7 +10,7 @@ UENUM(BlueprintType)
 enum class E_GunName : uint8
 {
 	EGN_M416 UMETA(DisplayName = "M416"),
-	EGN_SCAR UMETA(DisplayName = "SCAR"),
+	EGN_AK74U UMETA(DisplayName = "AK74U"),
 	EGN_AK47 UMETA(DisplayName = "AK47"),
 };
 
@@ -43,6 +43,12 @@ private:
 		class UStaticMeshComponent* GunMesh;
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 		USceneComponent* MuzzleLocation;
+	UPROPERTY(EditAnywhere)
+		class UStaticMesh* M416Mesh;
+	UPROPERTY(EditAnywhere)
+		class UStaticMesh* AK74UMesh;
+	UPROPERTY(EditAnywhere)
+		class UStaticMesh* AK47Mesh;
 
 public:
 	UPROPERTY(EditAnywhere)
