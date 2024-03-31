@@ -31,9 +31,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-public:
+private:
 	float maxWeight;
+
+public:
+	float baseMaxWeight = 20.f;	
 	float currentWeight;
+	float GetMaxWeight();
 	
 private:
 	UPROPERTY(EditAnywhere)

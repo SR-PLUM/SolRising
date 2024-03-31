@@ -36,8 +36,6 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere)
-	class USphereComponent* SphereComponent;
-	UPROPERTY(VisibleAnywhere)
 	class USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* ViewCamera;
@@ -50,7 +48,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	class AGun* SubGun = nullptr;
 	UPROPERTY(VisibleAnywhere)
-	class ABag* Bag = nullptr;
+	class ABag* Bag;
 
 public:
 	UFUNCTION()

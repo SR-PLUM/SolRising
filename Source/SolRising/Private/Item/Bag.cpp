@@ -11,10 +11,6 @@ ABag::ABag()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dis(0, 2);
-
 	if (!RootComponent)
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
@@ -37,6 +33,18 @@ ABag::ABag()
 		}
 	}
 
+	maxWeight = baseMaxWeight;
+}
+
+// Called when the game starts or when spawned
+void ABag::BeginPlay()
+{
+	Super::BeginPlay();
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dis(0, 2);
+
 	int bagType_gen = dis(gen);
 
 	switch (bagType_gen)
@@ -55,18 +63,16 @@ ABag::ABag()
 	}
 }
 
-// Called when the game starts or when spawned
-void ABag::BeginPlay()
-{
-	Super::BeginPlay();
-
-}
-
 // Called every frame
 void ABag::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+float ABag::GetMaxWeight()
+{
+	return maxWeight;
 }
 
 bool ABag::CanPick(float itemWeight)
