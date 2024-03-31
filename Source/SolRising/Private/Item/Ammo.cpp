@@ -15,11 +15,11 @@ AAmmo::AAmmo()
 	{
 		AmmoMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AmmoMesh"));
 
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("AmmoMeshPath"));
+		/*static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("AmmoMeshPath"));
 		if (Mesh.Succeeded())
 		{
 			AmmoMesh->SetStaticMesh(Mesh.Object);
-		}
+		}*/
 
 		RootComponent = AmmoMesh;
 	}

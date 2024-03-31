@@ -36,8 +36,6 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere)
-	class USphereComponent* SphereComponent;
-	UPROPERTY(VisibleAnywhere)
 	class USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* ViewCamera;

@@ -3,10 +3,10 @@
 
 #include "Character/Solaris.h"
 
-#include "Components/SphereComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 
 #include "Item/Item.h"
 #include "Item/Gun.h"
@@ -30,21 +30,15 @@ ASolaris::ASolaris()
 	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
 	ViewCamera->SetupAttachment(CameraBoom);
 
-	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	SphereComponent->SetupAttachment(GetRootComponent());
-
 	Bag = CreateDefaultSubobject<ABag>(TEXT("Bag"));
 }
 
 void ASolaris::BeginPlay()
 {
-	Super::BeginPlay();
+	Super::BeginPlay();	
 	
-	if (SphereComponent)
-	{
-		SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASolaris::OnItemBeginOverlap);
-		SphereComponent->OnComponentEndOverlap.AddDynamic(this, &ASolaris::OnItemEndOverlap);
-	}
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ASolaris::OnItemBeginOverlap);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &ASolaris::OnItemEndOverlap);
 }
 
 void ASolaris::Tick(float DeltaTime)
