@@ -20,8 +20,8 @@ AAmmoProjectile::AAmmoProjectile()
 	AmmoProjectileComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("AmmoProjectile Component"));
 	AmmoProjectileComponent->UpdatedComponent = AmmoProjectileMesh;
 	AmmoProjectileComponent->ProjectileGravityScale = 0;
-	AmmoProjectileComponent->InitialSpeed =1000;
-	AmmoProjectileComponent->MaxSpeed = 1000;
+	AmmoProjectileComponent->InitialSpeed =10000;
+	AmmoProjectileComponent->MaxSpeed = 0;
 	AmmoProjectileComponent->bRotationFollowsVelocity = true;
 	AmmoProjectileComponent->bShouldBounce = false;
 

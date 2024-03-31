@@ -33,13 +33,6 @@ AGun::AGun()
 		auto SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
 		SceneComponent->SetupAttachment(RootComponent);
 	}
-	if (!InteractionComponent)
-	{
-		InteractionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-		InteractionComponent->InitSphereRadius(5.0f);
-		InteractionComponent->SetupAttachment(RootComponent);
-		//RootComponent = InteractionComponent;
-	}
 	if (!MuzzleLocation)
 	{
 		MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
@@ -164,6 +157,10 @@ void AGun::OnFire()
 		{
 			SpawnRotation = (CameraHit.Location - MuzzleLocation->GetComponentLocation()).Rotation();
 			DrawDebugLine(World, StartCameraTrace, EndCameraTrace, FColor::Red, false, 2.f);
+		}
+		else if (OwningCharacter)
+		{
+			SpawnRotation = OwningCharacter->GetCameraRotation();
 		}
 
 		FActorSpawnParameters SpawnParams;

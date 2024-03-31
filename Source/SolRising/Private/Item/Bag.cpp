@@ -15,16 +15,11 @@ ABag::ABag()
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
 	}
-	if (!InteractionComponent)
-	{
-		InteractionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-		InteractionComponent->InitSphereRadius(5.0f);
-		RootComponent = InteractionComponent;
-	}
+
 	if (!BagMesh)
 	{
 		BagMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BagMesh"));
-		BagMesh->SetupAttachment(InteractionComponent);
+		BagMesh->SetupAttachment(RootComponent);
 
 		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("BagMeshPath"));
 		if (Mesh.Succeeded())

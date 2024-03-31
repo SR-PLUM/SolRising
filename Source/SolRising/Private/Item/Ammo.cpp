@@ -28,13 +28,6 @@ AAmmo::AAmmo()
 		auto SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
 		SceneComponent->SetupAttachment(RootComponent);
 	}
-	if (!InteractionComponent)
-	{
-		InteractionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-		InteractionComponent->InitSphereRadius(5.0f);
-		InteractionComponent->SetupAttachment(RootComponent);
-		//RootComponent = InteractionComponent;
-	}
 	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/SM_5_56mm_Mag"));
 	EAT_5Mesh = Mesh1.Object;
