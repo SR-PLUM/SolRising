@@ -30,9 +30,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void Picked() override;
-
 private:
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* AmmoMesh;
+
+public:
+	int32 count;
+	int32 ammoType_gen;
 };

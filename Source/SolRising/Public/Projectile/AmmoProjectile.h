@@ -24,8 +24,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
+	class USphereComponent* AmmoProjectileSphere;
+
+	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* AmmoProjectileMesh;
 
 	UPROPERTY(EditAnywhere)
 	class UProjectileMovementComponent* AmmoProjectileComponent;
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);	
 };

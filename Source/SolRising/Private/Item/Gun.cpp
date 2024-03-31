@@ -14,6 +14,8 @@ AGun::AGun()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	weight = 0;
+
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> dis(0, 2);
@@ -48,9 +50,11 @@ AGun::AGun()
 		MuzzleLocation->SetupAttachment(RootComponent);
 	}
 
-	switch (dis(gen))	//TODO case를 enum값으로 바꾸기 EGN
+	int gunName_gen = dis(gen);
+
+	switch (gunName_gen)	//TODO case를 enum값으로 바꾸기 EGN
 	{
-	case 0:
+	case static_cast<int>(E_GunName::EGN_M416):
 		damage = M416Damage;
 		RPM = M416RPM;
 		verticalRecoil = M416VerticalRecoil;
@@ -58,7 +62,7 @@ AGun::AGun()
 		FireSound = M416FireSound;
 		FireAnimation = M416FireAnimation;
 		break;
-	case 1:
+	case static_cast<int>(E_GunName::EGN_SCAR):
 		damage = SCARDamage;
 		RPM = SCARRPM;
 		verticalRecoil = SCARVerticalRecoil;
@@ -66,7 +70,7 @@ AGun::AGun()
 		FireSound = SCARFireSound;
 		FireAnimation = SCARFireAnimation;
 		break;
-	case 2:
+	case static_cast<int>(E_GunName::EGN_AK47):
 		damage = AK47Damage;
 		RPM = AK47RPM;
 		verticalRecoil = AK47VerticalRecoil;
@@ -91,10 +95,6 @@ void AGun::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void AGun::Picked()
-{
 }
 
 void AGun::SelectiveFire()

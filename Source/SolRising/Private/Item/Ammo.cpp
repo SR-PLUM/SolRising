@@ -13,7 +13,7 @@ AAmmo::AAmmo()
 
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dis(0, 2);
+	std::uniform_int_distribution<int> dis(0, 1);
 
 	if (!RootComponent)
 	{
@@ -27,7 +27,7 @@ AAmmo::AAmmo()
 	}
 	if (!AmmoMesh)
 	{
-		AmmoMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
+		AmmoMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AmmoMesh"));
 		AmmoMesh->SetupAttachment(InteractionComponent);
 
 		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("AmmoMeshPath"));
@@ -36,6 +36,20 @@ AAmmo::AAmmo()
 			AmmoMesh->SetStaticMesh(Mesh.Object);
 		}
 	}
+
+	ammoType_gen = dis(gen);
+
+	switch (ammoType_gen)
+	{
+	case static_cast<int>(E_AmmoType::EAT_5):
+		weight = 0.2 * count;
+		break;
+	case static_cast<int>(E_AmmoType::EAT_7):
+		weight = 0.4 * count;
+		break;
+	default:
+		break;
+	}
 }
 
 void AAmmo::BeginPlay()
@@ -43,9 +57,5 @@ void AAmmo::BeginPlay()
 }
 
 void AAmmo::Tick(float DeltaTime)
-{
-}
-
-void AAmmo::Picked()
 {
 }

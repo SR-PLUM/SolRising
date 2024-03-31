@@ -32,6 +32,5 @@ private:
 		class UStaticMeshComponent* ItemMesh;
 
 public:
-	virtual void Picked();
-
+	float weight;
 };
