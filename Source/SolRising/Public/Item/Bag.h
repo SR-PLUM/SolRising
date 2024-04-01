@@ -42,6 +42,8 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* BagMesh;
+	UPROPERTY(EditAnywhere)
+	class UStaticMesh* BagStaticMesh;
 
 	UPROPERTY()
 	TArray<class AItem*> havingItems;
