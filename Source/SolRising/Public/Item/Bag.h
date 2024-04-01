@@ -18,6 +18,8 @@ UCLASS()
 class SOLRISING_API ABag : public AItem
 {
 	GENERATED_BODY()
+public:
+	const float baseMaxWeight = 20.f;
 
 public:
 	// Sets default values for this actor's properties
@@ -35,7 +37,6 @@ private:
 	float maxWeight;
 
 public:
-	float baseMaxWeight = 20.f;	
 	float currentWeight;
 	float GetMaxWeight();
 	
