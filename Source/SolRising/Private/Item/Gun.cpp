@@ -20,11 +20,11 @@ AGun::AGun()
 	{
 		GunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
 
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("GunMeshPath"));
+		/*static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("GunMeshPath"));
 		if (Mesh.Succeeded())
 		{
 			GunMesh->SetStaticMesh(Mesh.Object);
-		}
+		}*/
 
 		RootComponent = GunMesh;
 	}

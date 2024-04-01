@@ -11,26 +11,29 @@ ABag::ABag()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	if (!BagMesh)
+	{
+		BagMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BagMesh"));
+
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Blueprints/Item/Leather_Water_Pot_wgxobbm/S_Leather_Water_Pot_wgxobbm_lod0_Var1"));
+		if (Mesh.Succeeded())
+		{
+			BagMesh->SetStaticMesh(Mesh.Object);
+		}
+
+		RootComponent = BagMesh;
+	}
 	if (!RootComponent)
 	{
-		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
+		auto SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
+		SceneComponent->SetupAttachment(RootComponent);
 	}
 	if (!InteractionComponent)
 	{
 		InteractionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 		InteractionComponent->InitSphereRadius(5.0f);
-		RootComponent = InteractionComponent;
-	}
-	if (!BagMesh)
-	{
-		BagMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BagMesh"));
-		BagMesh->SetupAttachment(InteractionComponent);
-
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("BagMeshPath"));
-		if (Mesh.Succeeded())
-		{
-			BagMesh->SetStaticMesh(Mesh.Object);
-		}
+		InteractionComponent->SetupAttachment(RootComponent);
+		//RootComponent = InteractionComponent;
 	}
 
 	maxWeight = baseMaxWeight;
@@ -50,12 +53,18 @@ void ABag::BeginPlay()
 	switch (bagType_gen)
 	{
 	case static_cast<int>(E_BagType::EBT_SmallBag):
+
+		BagMesh->SetRelativeScale3D(FVector(3, 3, 3));
 		maxWeight = 50;
 		break;
 	case static_cast<int>(E_BagType::EBT_MediumBag):
+
+		BagMesh->SetRelativeScale3D(FVector(4, 4, 4));
 		maxWeight = 100;
 		break;
 	case static_cast<int>(E_BagType::EBT_LargeBag):
+		
+		BagMesh->SetRelativeScale3D(FVector(5, 5, 5));
 		maxWeight = 150;
 		break;
 	default:
