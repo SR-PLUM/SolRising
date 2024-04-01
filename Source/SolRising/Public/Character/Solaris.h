@@ -39,6 +39,8 @@ private:
 	class USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* ViewCamera;
+	UPROPERTY(VisibleAnywhere)
+	class USphereComponent* PickItemRange;
 
 	UPROPERTY()
 	TArray<class AItem*> OverlappedItem;
@@ -60,4 +62,6 @@ public:
 
 	FVector GetCameraLocation();
 	FRotator GetCameraRotation();
+
+	bool LineTracingMouse(FHitResult& CameraHit);
 };

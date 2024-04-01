@@ -3,10 +3,11 @@
 
 #include "Character/Solaris.h"
 
+#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
 
 #include "Item/Item.h"
 #include "Item/Gun.h"
@@ -30,6 +31,9 @@ ASolaris::ASolaris()
 	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
 	ViewCamera->SetupAttachment(CameraBoom);
 
+	PickItemRange = CreateDefaultSubobject<USphereComponent>(TEXT("PickItemRange"));
+	PickItemRange->SetupAttachment(RootComponent);
+
 	Bag = CreateDefaultSubobject<ABag>(TEXT("Bag"));
 }
 
@@ -37,8 +41,8 @@ void ASolaris::BeginPlay()
 {
 	Super::BeginPlay();	
 	
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ASolaris::OnItemBeginOverlap);
-	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &ASolaris::OnItemEndOverlap);
+	PickItemRange->OnComponentBeginOverlap.AddDynamic(this, &ASolaris::OnItemBeginOverlap);
+	PickItemRange->OnComponentEndOverlap.AddDynamic(this, &ASolaris::OnItemEndOverlap);
 }
 
 void ASolaris::Tick(float DeltaTime)
@@ -93,11 +97,30 @@ void ASolaris::LookUp(float Value)
 
 void ASolaris::Pick()
 {
-	if (OverlappedItem.IsEmpty())
-		return;
+	AItem* pickedItem = nullptr;
 
-	AItem* pickedItem = OverlappedItem[0];
-	OverlappedItem.Remove(pickedItem);
+	FHitResult CameraHit;
+	auto bIsCameraHit = LineTracingMouse(CameraHit);
+
+	if (bIsCameraHit)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("bIsHitCamera is true"));
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *CameraHit.GetActor()->GetName());
+		auto CameraHitItem = Cast<AItem>(CameraHit.GetActor());
+		if (CameraHitItem)
+		{
+			pickedItem = CameraHitItem;
+		}
+	}
+
+	if (!pickedItem)
+	{
+		if (OverlappedItem.IsEmpty())
+			return;
+
+		pickedItem = OverlappedItem[0];
+		OverlappedItem.Remove(pickedItem);
+	}
 
 	AGun* gun = Cast<AGun>(pickedItem);
 	if (gun)
@@ -199,5 +222,26 @@ FRotator ASolaris::GetCameraRotation()
 		return FRotator();
 
 	return ViewCamera->GetComponentRotation();
+}
+
+bool ASolaris::LineTracingMouse(FHitResult& CameraHit)
+{
+	const float TraceDistance = 10000.f;
+	UWorld* World = GetWorld();
+
+	if (World)
+	{
+		FVector StartCameraTrace = GetCameraLocation();
+		FVector EndCameraTrace = StartCameraTrace + (GetCameraRotation().Vector() * TraceDistance);
+		ECollisionChannel ECC_CameraHit = ECC_Visibility;
+		bool bIsHitCamera = World->LineTraceSingleByChannel(CameraHit, StartCameraTrace, EndCameraTrace, ECC_CameraHit);
+		if (bIsHitCamera)
+		{
+			DrawDebugLine(World, StartCameraTrace, EndCameraTrace, FColor::Red, false, 2.f);
+			return true;
+		}
+	}
+
+	return false;
 }
 

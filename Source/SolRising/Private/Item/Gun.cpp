@@ -16,34 +16,20 @@ AGun::AGun()
 
 	weight = 0;
 
-	if (!GunMesh)
-	{
-		GunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
-
-		/*static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("GunMeshPath"));
-		if (Mesh.Succeeded())
-		{
-			GunMesh->SetStaticMesh(Mesh.Object);
-		}*/
-
-		RootComponent = GunMesh;
-	}
 	if (!RootComponent)
 	{
 		auto SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
-		SceneComponent->SetupAttachment(RootComponent);
+		RootComponent = SceneComponent;
 	}
-	if (!InteractionComponent)
+	if (!GunMesh)
 	{
-		InteractionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-		InteractionComponent->InitSphereRadius(5.0f);
-		InteractionComponent->SetupAttachment(RootComponent);
-		//RootComponent = InteractionComponent;
+		GunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
+		GunMesh->SetupAttachment(RootComponent);
 	}
 	if (!MuzzleLocation)
 	{
 		MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
-		MuzzleLocation->SetupAttachment(RootComponent);
+		MuzzleLocation->SetupAttachment(GunMesh);
 	}
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/SM_M416"));
@@ -69,9 +55,13 @@ void AGun::BeginPlay()
 	{
 	case static_cast<int>(E_GunName::EGN_M416):
 
-		if (M416Mesh)
+		if (M416Mesh && GunMesh)
 		{
 			GunMesh->SetStaticMesh(M416Mesh);
+		}
+		if (MuzzleLocation)
+		{
+			MuzzleLocation->SetRelativeLocation(FVector(0.f, 62.f, 10.5f));
 		}
 
 		damage = M416Damage;
@@ -83,9 +73,13 @@ void AGun::BeginPlay()
 		break;
 	case static_cast<int>(E_GunName::EGN_AK74U):
 
-		if (AK74UMesh)
+		if (AK74UMesh && GunMesh)
 		{
 			GunMesh->SetStaticMesh(AK74UMesh);
+		}
+		if (MuzzleLocation)
+		{
+			MuzzleLocation->SetRelativeLocation(FVector(0.f, 49.f, 8.f));
 		}
 
 		damage = SCARDamage;
@@ -97,9 +91,13 @@ void AGun::BeginPlay()
 		break;
 	case static_cast<int>(E_GunName::EGN_AK47):
 
-		if (AK47Mesh)
+		if (AK47Mesh && GunMesh)
 		{
 			GunMesh->SetStaticMesh(AK47Mesh);
+		}
+		if (MuzzleLocation)
+		{
+			MuzzleLocation->SetRelativeLocation(FVector(0.f, 65.f, 8.f));
 		}
 
 		damage = AK47Damage;
@@ -154,16 +152,16 @@ void AGun::OnFire()
 		FRotator SpawnRotation = GetActorRotation();
 		FVector SpawnLocation = MuzzleLocation->GetComponentLocation();
 
-		//Tracing Camera Aim
 		FHitResult CameraHit;
-		FVector StartCameraTrace = OwningCharacter->GetCameraLocation();
-		FVector EndCameraTrace = StartCameraTrace + (OwningCharacter->GetCameraRotation().Vector() * TraceDistance);
-		ECollisionChannel ECC_CameraHit = ECC_Visibility;
-		bool bIsHitCamera = World->LineTraceSingleByChannel(CameraHit, StartCameraTrace, EndCameraTrace, ECC_CameraHit);
+		bool bIsHitCamera = OwningCharacter->LineTracingMouse(CameraHit);
+
 		if (bIsHitCamera)
 		{
 			SpawnRotation = (CameraHit.Location - MuzzleLocation->GetComponentLocation()).Rotation();
-			DrawDebugLine(World, StartCameraTrace, EndCameraTrace, FColor::Red, false, 2.f);
+		}
+		else if (OwningCharacter)
+		{
+			SpawnRotation = OwningCharacter->GetCameraRotation();
 		}
 
 		FActorSpawnParameters SpawnParams;
@@ -174,7 +172,8 @@ void AGun::OnFire()
 		SpawnParams.Owner = this;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		World->SpawnActor<AAmmoProjectile>(AmmoProjectileActor, SpawnTransform, SpawnParams);
+		auto ammoProjectile = World->SpawnActor<AAmmoProjectile>(AmmoProjectileActor, SpawnTransform, SpawnParams);
+		ammoProjectile->OwningCharacter = OwningCharacter;
 	}
 
 	// try and play the sound if specified
@@ -253,7 +252,7 @@ void AGun::Aiming()
 void AGun::AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName)
 {
 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-	GunMesh->AttachToComponent(InParent, TransformRules, SocketName);
+	RootComponent->AttachToComponent(InParent, TransformRules, SocketName);
 }
 
 void AGun::SetOwningCharacter(ASolaris* owningCharacter)

@@ -120,7 +120,7 @@ private:
 	FVector GunOffset = FVector(100.0f, 0.0f, 10.0f);
 
 	UPROPERTY()
-	class ASolaris* OwningCharacter;
+	class ASolaris* OwningCharacter = nullptr;
 
 private:
 	FTimerHandle reloadTimer;

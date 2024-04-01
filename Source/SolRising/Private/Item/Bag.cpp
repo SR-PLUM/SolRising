@@ -28,13 +28,6 @@ ABag::ABag()
 		auto SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
 		SceneComponent->SetupAttachment(RootComponent);
 	}
-	if (!InteractionComponent)
-	{
-		InteractionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-		InteractionComponent->InitSphereRadius(5.0f);
-		InteractionComponent->SetupAttachment(RootComponent);
-		//RootComponent = InteractionComponent;
-	}
 
 	maxWeight = baseMaxWeight;
 }
