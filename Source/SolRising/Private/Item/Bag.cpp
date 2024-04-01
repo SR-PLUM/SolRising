@@ -29,17 +29,6 @@ ABag::ABag()
 		SceneComponent->SetupAttachment(RootComponent);
 	}
 
-	if (!BagMesh)
-	{
-		BagMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BagMesh"));
-		BagMesh->SetupAttachment(RootComponent);
-
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("BagMeshPath"));
-		if (Mesh.Succeeded())
-		{
-			BagMesh->SetStaticMesh(Mesh.Object);
-		}
-
 	maxWeight = baseMaxWeight;
 }
 
