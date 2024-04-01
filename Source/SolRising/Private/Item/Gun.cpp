@@ -16,21 +16,20 @@ AGun::AGun()
 
 	weight = 0;
 
-	if (!GunMesh)
-	{
-		GunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
-
-		RootComponent = GunMesh;
-	}
 	if (!RootComponent)
 	{
 		auto SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
-		SceneComponent->SetupAttachment(RootComponent);
+		RootComponent = SceneComponent;
+	}
+	if (!GunMesh)
+	{
+		GunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
+		GunMesh->SetupAttachment(RootComponent);
 	}
 	if (!MuzzleLocation)
 	{
 		MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
-		MuzzleLocation->SetupAttachment(RootComponent);
+		MuzzleLocation->SetupAttachment(GunMesh);
 	}
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/SM_M416"));
@@ -56,9 +55,13 @@ void AGun::BeginPlay()
 	{
 	case static_cast<int>(E_GunName::EGN_M416):
 
-		if (M416Mesh)
+		if (M416Mesh && GunMesh)
 		{
 			GunMesh->SetStaticMesh(M416Mesh);
+		}
+		if (MuzzleLocation)
+		{
+			MuzzleLocation->SetRelativeLocation(FVector(0.f, 62.f, 10.5f));
 		}
 
 		damage = M416Damage;
@@ -70,9 +73,13 @@ void AGun::BeginPlay()
 		break;
 	case static_cast<int>(E_GunName::EGN_AK74U):
 
-		if (AK74UMesh)
+		if (AK74UMesh && GunMesh)
 		{
 			GunMesh->SetStaticMesh(AK74UMesh);
+		}
+		if (MuzzleLocation)
+		{
+			MuzzleLocation->SetRelativeLocation(FVector(0.f, 49.f, 8.f));
 		}
 
 		damage = SCARDamage;
@@ -84,9 +91,13 @@ void AGun::BeginPlay()
 		break;
 	case static_cast<int>(E_GunName::EGN_AK47):
 
-		if (AK47Mesh)
+		if (AK47Mesh && GunMesh)
 		{
 			GunMesh->SetStaticMesh(AK47Mesh);
+		}
+		if (MuzzleLocation)
+		{
+			MuzzleLocation->SetRelativeLocation(FVector(0.f, 65.f, 8.f));
 		}
 
 		damage = AK47Damage;
@@ -245,7 +256,7 @@ void AGun::Aiming()
 void AGun::AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName)
 {
 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-	GunMesh->AttachToComponent(InParent, TransformRules, SocketName);
+	RootComponent->AttachToComponent(InParent, TransformRules, SocketName);
 }
 
 void AGun::SetOwningCharacter(ASolaris* owningCharacter)
