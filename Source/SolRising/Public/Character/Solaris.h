@@ -62,4 +62,6 @@ public:
 
 	FVector GetCameraLocation();
 	FRotator GetCameraRotation();
+
+	bool LineTracingMouse(FHitResult& CameraHit);
 };

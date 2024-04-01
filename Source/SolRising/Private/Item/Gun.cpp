@@ -152,16 +152,12 @@ void AGun::OnFire()
 		FRotator SpawnRotation = GetActorRotation();
 		FVector SpawnLocation = MuzzleLocation->GetComponentLocation();
 
-		//Tracing Camera Aim
 		FHitResult CameraHit;
-		FVector StartCameraTrace = OwningCharacter->GetCameraLocation();
-		FVector EndCameraTrace = StartCameraTrace + (OwningCharacter->GetCameraRotation().Vector() * TraceDistance);
-		ECollisionChannel ECC_CameraHit = ECC_Visibility;
-		bool bIsHitCamera = World->LineTraceSingleByChannel(CameraHit, StartCameraTrace, EndCameraTrace, ECC_CameraHit);
+		bool bIsHitCamera = OwningCharacter->LineTracingMouse(CameraHit);
+
 		if (bIsHitCamera)
 		{
 			SpawnRotation = (CameraHit.Location - MuzzleLocation->GetComponentLocation()).Rotation();
-			DrawDebugLine(World, StartCameraTrace, EndCameraTrace, FColor::Red, false, 2.f);
 		}
 		else if (OwningCharacter)
 		{

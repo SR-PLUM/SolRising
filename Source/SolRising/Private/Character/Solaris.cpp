@@ -97,11 +97,30 @@ void ASolaris::LookUp(float Value)
 
 void ASolaris::Pick()
 {
-	if (OverlappedItem.IsEmpty())
-		return;
+	AItem* pickedItem = nullptr;
 
-	AItem* pickedItem = OverlappedItem[0];
-	OverlappedItem.Remove(pickedItem);
+	FHitResult CameraHit;
+	auto bIsCameraHit = LineTracingMouse(CameraHit);
+
+	if (bIsCameraHit)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("bIsHitCamera is true"));
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *CameraHit.GetActor()->GetName());
+		auto CameraHitItem = Cast<AItem>(CameraHit.GetActor());
+		if (CameraHitItem)
+		{
+			pickedItem = CameraHitItem;
+		}
+	}
+
+	if (!pickedItem)
+	{
+		if (OverlappedItem.IsEmpty())
+			return;
+
+		pickedItem = OverlappedItem[0];
+		OverlappedItem.Remove(pickedItem);
+	}
 
 	AGun* gun = Cast<AGun>(pickedItem);
 	if (gun)
@@ -203,5 +222,26 @@ FRotator ASolaris::GetCameraRotation()
 		return FRotator();
 
 	return ViewCamera->GetComponentRotation();
+}
+
+bool ASolaris::LineTracingMouse(FHitResult& CameraHit)
+{
+	const float TraceDistance = 10000.f;
+	UWorld* World = GetWorld();
+
+	if (World)
+	{
+		FVector StartCameraTrace = GetCameraLocation();
+		FVector EndCameraTrace = StartCameraTrace + (GetCameraRotation().Vector() * TraceDistance);
+		ECollisionChannel ECC_CameraHit = ECC_Visibility;
+		bool bIsHitCamera = World->LineTraceSingleByChannel(CameraHit, StartCameraTrace, EndCameraTrace, ECC_CameraHit);
+		if (bIsHitCamera)
+		{
+			DrawDebugLine(World, StartCameraTrace, EndCameraTrace, FColor::Red, false, 2.f);
+			return true;
+		}
+	}
+
+	return false;
 }
 
