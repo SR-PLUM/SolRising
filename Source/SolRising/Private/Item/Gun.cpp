@@ -20,12 +20,6 @@ AGun::AGun()
 	{
 		GunMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GunMesh"));
 
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("GunMeshPath"));
-		if (Mesh.Succeeded())
-		{
-			GunMesh->SetStaticMesh(Mesh.Object);
-		}
-
 		RootComponent = GunMesh;
 	}
 	if (!RootComponent)
@@ -171,7 +165,8 @@ void AGun::OnFire()
 		SpawnParams.Owner = this;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		World->SpawnActor<AAmmoProjectile>(AmmoProjectileActor, SpawnTransform, SpawnParams);
+		auto ammoProjectile = World->SpawnActor<AAmmoProjectile>(AmmoProjectileActor, SpawnTransform, SpawnParams);
+		ammoProjectile->OwningCharacter = OwningCharacter;
 	}
 
 	// try and play the sound if specified

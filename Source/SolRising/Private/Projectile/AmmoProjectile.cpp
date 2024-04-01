@@ -11,11 +11,8 @@ AAmmoProjectile::AAmmoProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	AmmoProjectileSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AmmoProjectile Sphere"));
-	RootComponent = AmmoProjectileSphere;
-
 	AmmoProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AmmoProjectile Mesh"));
-	AmmoProjectileMesh->SetupAttachment(GetRootComponent());
+	RootComponent = AmmoProjectileMesh;
 
 	AmmoProjectileComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("AmmoProjectile Component"));
 	AmmoProjectileComponent->UpdatedComponent = AmmoProjectileMesh;
@@ -33,7 +30,7 @@ void AAmmoProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AmmoProjectileSphere->OnComponentHit.AddDynamic(this, &AAmmoProjectile::OnHit);
+	AmmoProjectileMesh->OnComponentHit.AddDynamic(this, &AAmmoProjectile::OnHit);
 }
 
 // Called every frame
@@ -45,6 +42,9 @@ void AAmmoProjectile::Tick(float DeltaTime)
 
 void AAmmoProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (OtherActor == OwningCharacter)
+		return;
+
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetName());
 	Destroy();
 }
