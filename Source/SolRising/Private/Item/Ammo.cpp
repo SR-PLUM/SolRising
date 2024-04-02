@@ -73,3 +73,19 @@ void AAmmo::BeginPlay()
 void AAmmo::Tick(float DeltaTime)
 {
 }
+
+void AAmmo::ChangeAmmoType(E_AmmoType EAT)
+{
+	if (EAT == E_AmmoType::EAT_5)
+	{
+		if(EAT_5Mesh && AmmoMesh)
+			AmmoMesh->SetStaticMesh(EAT_5Mesh);
+		weight = 0.2 * count;
+	}
+	else if (EAT == E_AmmoType::EAT_7)
+	{
+		if (EAT_7Mesh && AmmoMesh)
+			AmmoMesh->SetStaticMesh(EAT_7Mesh);
+		weight = 0.4 * count;
+	}
+}

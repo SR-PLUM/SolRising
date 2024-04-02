@@ -64,6 +64,7 @@ void AGun::BeginPlay()
 			MuzzleLocation->SetRelativeLocation(FVector(0.f, 62.f, 10.5f));
 		}
 
+		currentGunName = E_GunName::EGN_M416;
 		damage = M416Damage;
 		RPM = M416RPM;
 		verticalRecoil = M416VerticalRecoil;
@@ -82,6 +83,7 @@ void AGun::BeginPlay()
 			MuzzleLocation->SetRelativeLocation(FVector(0.f, 49.f, 8.f));
 		}
 
+		currentGunName = E_GunName::EGN_AK74U;
 		damage = SCARDamage;
 		RPM = SCARRPM;
 		verticalRecoil = SCARVerticalRecoil;
@@ -100,6 +102,7 @@ void AGun::BeginPlay()
 			MuzzleLocation->SetRelativeLocation(FVector(0.f, 65.f, 8.f));
 		}
 
+		currentGunName = E_GunName::EGN_AK47;
 		damage = AK47Damage;
 		RPM = AK47RPM;
 		verticalRecoil = AK47VerticalRecoil;
