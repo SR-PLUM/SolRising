@@ -39,6 +39,8 @@ ASolaris::ASolaris()
 	PickItemRange->SetupAttachment(RootComponent);
 
 	Bag = CreateDefaultSubobject<ABag>(TEXT("Bag"));
+
+	healthPoint = 100.f;
 }
 
 void ASolaris::BeginPlay()
@@ -263,5 +265,15 @@ void ASolaris::TogglePerspective()
 		ViewCamera->Activate();
 		FPCamera->Deactivate();
 	}
+}
+
+float ASolaris::GetHP()
+{
+	return healthPoint;
+}
+
+void ASolaris::SetHP(float setHP)
+{
+	healthPoint = setHP;
 }
 

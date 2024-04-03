@@ -68,4 +68,11 @@ public:
 	void TogglePerspective();
 
 	bool LineTracingMouse(FHitResult& CameraHit);
+
+private:
+	float healthPoint;
+
+public:
+	float GetHP();
+	void SetHP(float setHP);
 };
