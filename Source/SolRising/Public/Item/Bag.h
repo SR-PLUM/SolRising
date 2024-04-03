@@ -42,9 +42,13 @@ public:
 	
 private:
 	UPROPERTY(EditAnywhere)
-	class UStaticMeshComponent* BagMesh;
+		class UStaticMeshComponent* BagMesh;
 	UPROPERTY(EditAnywhere)
-	class UStaticMesh* BagStaticMesh;
+		class UStaticMesh* Lv1BagMesh;
+	UPROPERTY(EditAnywhere)
+		class UStaticMesh* Lv2BagMesh;
+	UPROPERTY(EditAnywhere)
+		class UStaticMesh* Lv3BagMesh;
 
 	UPROPERTY()
 	TArray<class AItem*> havingItems;
