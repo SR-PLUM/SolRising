@@ -60,4 +60,5 @@ public:
 	
 	void AddItem(AItem* item);
 	void AddAmmoCount(int AmmoType ,int AmmoCount);
+	void AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName);
 };

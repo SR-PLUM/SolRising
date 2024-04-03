@@ -23,14 +23,14 @@ ABag::ABag()
 		SceneComponent->SetupAttachment(RootComponent);
 	}
 
+	maxWeight = baseMaxWeight;
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_1_Bag"));
 	Lv1BagMesh = Mesh1.Object;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_2_Bag"));
 	Lv2BagMesh = Mesh2.Object;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_3_Bag"));
-	Lv3BagMesh = Mesh3.Object;
-
-	maxWeight = baseMaxWeight;
+	Lv3BagMesh = Mesh3.Object;	
 }
 
 // Called when the game starts or when spawned
@@ -109,4 +109,10 @@ void ABag::AddItem(AItem* item)
 void ABag::AddAmmoCount(int AmmoType, int AmmoCount)
 {
 	currentAmmoCount[AmmoType] += AmmoCount;
+}
+
+void ABag::AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName)
+{
+	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+	RootComponent->AttachToComponent(InParent, TransformRules, SocketName);
 }

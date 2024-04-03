@@ -152,9 +152,11 @@ void ASolaris::Pick()
 	ABag* bag = Cast<ABag>(pickedItem);
 	if (bag)
 	{
-		if (Bag == nullptr || Bag->GetMaxWeight() == Bag->baseMaxWeight)
+		if (Bag == nullptr || bag->GetMaxWeight() >= Bag->GetMaxWeight())
 		{
 			Bag = bag;
+			UE_LOG(LogTemp, Warning, TEXT("새로 먹은 가방 최대 용량 : %f, 현재 가방용량 : %f"), Bag->GetMaxWeight(), Bag->currentWeight)
+			Bag->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
 			//TODO 소켓 장착
 		}
 	}
@@ -178,7 +180,7 @@ void ASolaris::Pick()
 			UE_LOG(LogTemp, Warning, TEXT("총알 획득 실패"))
 		}
 	}
-	else if (Bag == nullptr)
+	else if (ammo && Bag == nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Bag 없음"))
 	}
