@@ -40,6 +40,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* ViewCamera;
 	UPROPERTY(VisibleAnywhere)
+	class UCameraComponent* FPCamera;
+	UPROPERTY(VisibleAnywhere)
 	class USphereComponent* PickItemRange;
 
 	UPROPERTY()
@@ -62,6 +64,8 @@ public:
 
 	FVector GetCameraLocation();
 	FRotator GetCameraRotation();
+
+	void TogglePerspective();
 
 	bool LineTracingMouse(FHitResult& CameraHit);
 };

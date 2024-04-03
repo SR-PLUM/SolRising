@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/ActorComponent.h"
 
 #include "Item/Item.h"
 #include "Item/Gun.h"
@@ -30,6 +31,9 @@ ASolaris::ASolaris()
 
 	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
 	ViewCamera->SetupAttachment(CameraBoom);
+
+	FPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FPCamera"));
+	FPCamera->SetupAttachment(GetMesh());
 
 	PickItemRange = CreateDefaultSubobject<USphereComponent>(TEXT("PickItemRange"));
 	PickItemRange->SetupAttachment(RootComponent);
@@ -245,5 +249,19 @@ bool ASolaris::LineTracingMouse(FHitResult& CameraHit)
 	}
 
 	return false;
+}
+
+void ASolaris::TogglePerspective()
+{
+	if (ViewCamera->IsActive() == true)
+	{
+		FPCamera->Activate();
+		ViewCamera->Deactivate();
+	}
+	else if (ViewCamera->IsActive() == false)
+	{
+		ViewCamera->Activate();
+		FPCamera->Deactivate();
+	}
 }
 
