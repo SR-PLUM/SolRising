@@ -34,8 +34,7 @@ void AItemSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//int32 ItemType = FMath::RandRange(0, NumberOfItemType - 1);
-	int32 ItemType = 2;
+	int32 ItemType = FMath::RandRange(0, NumberOfItemType - 1);
 
 	switch (ItemType)
 	{
@@ -114,11 +113,11 @@ void AItemSpawner::SpawnGun()
 				auto GunName = SpawnedGun->currentGunName;
 				if (GunName == E_GunName::EGN_AK47 || GunName == E_GunName::EGN_AK74U)
 				{
-					SpawnedAmmo->ChangeAmmoType(E_AmmoType::EAT_5);
+					SpawnedAmmo->ChangeAmmoType(E_AmmoType::EAT_7);
 				}
 				else if (GunName == E_GunName::EGN_M416)
 				{
-					SpawnedAmmo->ChangeAmmoType(E_AmmoType::EAT_7);
+					SpawnedAmmo->ChangeAmmoType(E_AmmoType::EAT_5);
 				}
 			}
 		}

@@ -7,8 +7,6 @@
 #include "Character/Solaris.h"
 #include "Camera/CameraComponent.h"
 
-#include <random>
-
 AGun::AGun()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -45,15 +43,11 @@ void AGun::BeginPlay()
 {
 	Super::BeginPlay();
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dis(0, 2);
+	auto gunName = FMath::RandRange(0, 2);
 
-	int gunName_gen = dis(gen);
-
-	switch (gunName_gen)
+	switch (gunName)
 	{
-	case static_cast<int>(E_GunName::EGN_M416):
+	case (uint8)(E_GunName::EGN_M416):
 
 		if (M416Mesh && GunMesh)
 		{
@@ -72,7 +66,7 @@ void AGun::BeginPlay()
 		FireSound = M416FireSound;
 		FireAnimation = M416FireAnimation;
 		break;
-	case static_cast<int>(E_GunName::EGN_AK74U):
+	case (uint8)(E_GunName::EGN_AK74U):
 
 		if (AK74UMesh && GunMesh)
 		{
@@ -91,7 +85,7 @@ void AGun::BeginPlay()
 		FireSound = SCARFireSound;
 		FireAnimation = SCARFireAnimation;
 		break;
-	case static_cast<int>(E_GunName::EGN_AK47):
+	case (uint8)(E_GunName::EGN_AK47):
 
 		if (AK47Mesh && GunMesh)
 		{
