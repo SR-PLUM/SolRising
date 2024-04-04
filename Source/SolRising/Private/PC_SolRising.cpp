@@ -23,6 +23,7 @@ void APC_SolRising::SetupInputComponent()
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &APC_SolRising::Jump);
 	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &APC_SolRising::Fire);
 	InputComponent->BindAction("Interaction", EInputEvent::IE_Pressed, this, &APC_SolRising::Interaction);
+	InputComponent->BindAction("ToggleCamera", EInputEvent::IE_Pressed, this, &APC_SolRising::ToggleCamera);
 }
 
 void APC_SolRising::MoveForward(float Value)
@@ -139,4 +140,20 @@ void APC_SolRising::Interaction()
 	}
 
 	Solaris->Pick();
+}
+
+void APC_SolRising::ToggleCamera()
+{
+	if (Solaris == nullptr)
+	{
+		auto TryGetSolaris = Cast<ASolaris>(GetPawn());
+		if (TryGetSolaris == nullptr)
+		{
+			return;
+		}
+
+		Solaris = TryGetSolaris;
+	}
+
+	Solaris->TogglePerspective();
 }

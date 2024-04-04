@@ -27,9 +27,9 @@ AAmmo::AAmmo()
 		SceneComponent->SetupAttachment(RootComponent);
 	}
 	
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/SM_5_56mm_Mag"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/StaticMesh/SM_5_56mm_Mag"));
 	EAT_5Mesh = Mesh1.Object;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/SM_7_62mm_Mag"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_7_62mm_Mag"));
 	EAT_7Mesh = Mesh2.Object;
 }
 
