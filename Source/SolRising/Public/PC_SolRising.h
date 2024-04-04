@@ -31,5 +31,5 @@ public:
 
 	void Fire();
 	void Interaction();
-
+	void ToggleCamera();
 };

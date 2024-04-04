@@ -5,6 +5,8 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
+#include "Character/Solaris.h"
+
 // Sets default values
 AAmmoProjectile::AAmmoProjectile()
 {
@@ -44,6 +46,13 @@ void AAmmoProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 {
 	if (OtherActor == OwningCharacter)
 		return;
+
+	ASolaris* enemy = Cast<ASolaris>(OtherActor);
+	if (enemy)
+	{
+		enemy->SetHP(enemy->GetHP() - 10.f);
+		UE_LOG(LogTemp, Warning, TEXT("%f"), enemy->GetHP());
+	}
 
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetName());
 	Destroy();

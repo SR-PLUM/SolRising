@@ -32,11 +32,11 @@ AGun::AGun()
 		MuzzleLocation->SetupAttachment(GunMesh);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/SM_M416"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/StaticMesh/SM_M416"));
 	M416Mesh = Mesh1.Object;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/SM_AK74U"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_KA74U_Y"));
 	AK74UMesh = Mesh2.Object;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/Blueprints/Item/SM_AK47"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/Blueprints/Item/StaticMesh/SM_AK47"));
 	AK47Mesh = Mesh3.Object;	
 }
 
