@@ -5,8 +5,6 @@
 #include "Components/SphereComponent.h"
 #include "kismet/GameplayStatics.h"
 
-#include <random>
-
 AAmmo::AAmmo()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -39,15 +37,11 @@ void AAmmo::BeginPlay()
 {
 	Super::BeginPlay();
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dis(0, 1);
+	int32 ammoType = FMath::RandRange(0, 1);
 
-	ammoType_gen = dis(gen);
-
-	switch (ammoType_gen)
+	switch (ammoType)
 	{
-	case static_cast<int>(E_AmmoType::EAT_5):
+	case (uint8)(E_AmmoType::EAT_5):
 
 		if (EAT_5Mesh)
 		{
@@ -56,7 +50,7 @@ void AAmmo::BeginPlay()
 
 		weight = 0.2 * count;
 		break;
-	case static_cast<int>(E_AmmoType::EAT_7):
+	case (uint8)(E_AmmoType::EAT_7):
 
 		if (EAT_7Mesh)
 		{
@@ -72,4 +66,20 @@ void AAmmo::BeginPlay()
 
 void AAmmo::Tick(float DeltaTime)
 {
+}
+
+void AAmmo::ChangeAmmoType(E_AmmoType EAT)
+{
+	if (EAT == E_AmmoType::EAT_5)
+	{
+		if(EAT_5Mesh && AmmoMesh)
+			AmmoMesh->SetStaticMesh(EAT_5Mesh);
+		weight = 0.2 * count;
+	}
+	else if (EAT == E_AmmoType::EAT_7)
+	{
+		if (EAT_7Mesh && AmmoMesh)
+			AmmoMesh->SetStaticMesh(EAT_7Mesh);
+		weight = 0.4 * count;
+	}
 }

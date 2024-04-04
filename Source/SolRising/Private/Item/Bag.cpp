@@ -4,8 +4,6 @@
 #include "Item/Bag.h"
 #include "Components/SphereComponent.h"
 
-#include <random>
-
 ABag::ABag()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -38,15 +36,11 @@ void ABag::BeginPlay()
 {
 	Super::BeginPlay();
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dis(0, 2);
+	auto bagType = FMath::RandRange(0, 2);
 
-	int bagType_gen = dis(gen);
-
-	switch (bagType_gen)
+	switch (bagType)
 	{
-	case static_cast<int>(E_BagType::EBT_SmallBag):
+	case (uint8)(E_BagType::EBT_SmallBag):
 
 		if (Lv1BagMesh && BagMesh)
 		{
@@ -56,7 +50,7 @@ void ABag::BeginPlay()
 		BagMesh->SetRelativeScale3D(FVector(3, 3, 3));
 		maxWeight = 50;
 		break;
-	case static_cast<int>(E_BagType::EBT_MediumBag):
+	case (uint8)(E_BagType::EBT_MediumBag):
 
 		if (Lv2BagMesh && BagMesh)
 		{
@@ -66,7 +60,7 @@ void ABag::BeginPlay()
 		BagMesh->SetRelativeScale3D(FVector(4, 4, 4));
 		maxWeight = 100;
 		break;
-	case static_cast<int>(E_BagType::EBT_LargeBag):
+	case (uint8)(E_BagType::EBT_LargeBag):
 		
 		if (Lv3BagMesh && BagMesh)
 		{

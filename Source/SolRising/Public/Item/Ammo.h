@@ -41,4 +41,7 @@ private:
 public:
 	int32 count;
 	int32 ammoType_gen;
+
+public:
+	void ChangeAmmoType(E_AmmoType EAT);
 };

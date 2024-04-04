@@ -12,6 +12,7 @@ enum class E_GunName : uint8
 	EGN_M416 UMETA(DisplayName = "M416"),
 	EGN_AK74U UMETA(DisplayName = "AK74U"),
 	EGN_AK47 UMETA(DisplayName = "AK47"),
+	EGN_Null UMETA(DisplayName = "Null State"),
 };
 
 UENUM(BlueprintType)
@@ -93,6 +94,7 @@ private:
 
 public:
 	E_FireMethod currentFireMethod = E_FireMethod::EFM_Semi_Auto;
+	E_GunName currentGunName = E_GunName::EGN_Null;
 
 protected:
 	float damage;
