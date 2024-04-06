@@ -75,4 +75,6 @@ private:
 public:
 	float GetHP();
 	void SetHP(float setHP);
+
+	float GetCurrentGunDamage();
 };

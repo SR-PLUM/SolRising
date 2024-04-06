@@ -277,3 +277,11 @@ void ASolaris::SetHP(float setHP)
 	healthPoint = setHP;
 }
 
+float ASolaris::GetCurrentGunDamage()
+{
+	if (MainGun)
+		return MainGun->damage;
+	else 
+		return 0.f;
+}
+

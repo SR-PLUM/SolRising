@@ -47,10 +47,12 @@ void AAmmoProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	if (OtherActor == OwningCharacter)
 		return;
 
-	ASolaris* enemy = Cast<ASolaris>(OtherActor);
+	ASolaris* enemy = Cast<ASolaris>(OtherActor);	//AI로 변경
 	if (enemy)
 	{
-		enemy->SetHP(enemy->GetHP() - 10.f);
+		ASolaris* Solaris = Cast<ASolaris>(OwningCharacter);
+
+		enemy->SetHP(enemy->GetHP() - Solaris->GetCurrentGunDamage());
 		UE_LOG(LogTemp, Warning, TEXT("%f"), enemy->GetHP());
 	}
 
