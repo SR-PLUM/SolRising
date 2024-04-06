@@ -60,12 +60,15 @@ public:
 	UFUNCTION()
 	void OnItemEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
 	AGun* GetMainGun();
 
 	FVector GetCameraLocation();
 	FRotator GetCameraRotation();
 
 	void TogglePerspective();
+	UPROPERTY()
+	bool IsAiming = false;
 
 	bool LineTracingMouse(FHitResult& CameraHit);
 
