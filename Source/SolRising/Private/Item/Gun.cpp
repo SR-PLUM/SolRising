@@ -6,6 +6,7 @@
 #include "Projectile/AmmoProjectile.h"
 #include "Character/Solaris.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/Pawn.h"
 
 AGun::AGun()
 {
@@ -161,10 +162,13 @@ void AGun::OnFire()
 			SpawnRotation = OwningCharacter->GetCameraRotation();
 		}
 
-		auto yawBulletSpread = FMath::RandRange(-50, 50);
-		auto pitchBulletSpread = FMath::RandRange(-50, 50);
-		auto rollBulletSpread = FMath::RandRange(-50, 50);
-		SpawnRotation += FRotator(yawBulletSpread / 10, pitchBulletSpread / 10, rollBulletSpread / 10);	//10을 변수로 변경
+		if (OwningCharacter->IsAiming == false)
+		{
+			auto yawBulletSpread = FMath::RandRange(-50, 50);
+			auto pitchBulletSpread = FMath::RandRange(-50, 50);
+			auto rollBulletSpread = FMath::RandRange(-50, 50);
+			SpawnRotation += FRotator(yawBulletSpread / 10, pitchBulletSpread / 10, rollBulletSpread / 10);	//10을 변수로 변경
+		}		
 
 		FActorSpawnParameters SpawnParams;
 		FTransform SpawnTransform;
@@ -177,6 +181,12 @@ void AGun::OnFire()
 		auto ammoProjectile = World->SpawnActor<AAmmoProjectile>(AmmoProjectileActor, SpawnTransform, SpawnParams);
 		ammoProjectile->OwningCharacter = OwningCharacter;
 	}
+
+	auto yawRecoil = FMath::RandRange(-100, 100);
+	auto pitchRecoil = FMath::RandRange(-200, 0);
+
+	OwningCharacter->AddControllerYawInput(yawRecoil / 100);
+	OwningCharacter->AddControllerPitchInput(pitchRecoil / 100);
 
 	// try and play the sound if specified
 	if (FireSound != nullptr)
