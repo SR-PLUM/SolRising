@@ -14,6 +14,7 @@
 #include "Item/Gun.h"
 #include "Item/Bag.h"
 #include "Item/Ammo.h"
+#include "Architecture/Door.h"
 
 ASolaris::ASolaris()
 {
@@ -110,8 +111,13 @@ void ASolaris::Pick()
 
 	if (bIsCameraHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("bIsHitCamera is true"));
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *CameraHit.GetActor()->GetName());
+		auto CameraHitDoor = Cast<ADoor>(CameraHit.GetActor());
+		if (CameraHitDoor)
+		{
+			CameraHitDoor->Open();
+			return;
+		}
+
 		auto CameraHitItem = Cast<AItem>(CameraHit.GetActor());
 		if (CameraHitItem)
 		{
