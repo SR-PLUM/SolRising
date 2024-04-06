@@ -161,6 +161,11 @@ void AGun::OnFire()
 			SpawnRotation = OwningCharacter->GetCameraRotation();
 		}
 
+		auto yawBulletSpread = FMath::RandRange(-50, 50);
+		auto pitchBulletSpread = FMath::RandRange(-50, 50);
+		auto rollBulletSpread = FMath::RandRange(-50, 50);
+		SpawnRotation += FRotator(yawBulletSpread / 10, pitchBulletSpread / 10, rollBulletSpread / 10);	//10을 변수로 변경
+
 		FActorSpawnParameters SpawnParams;
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SpawnLocation);

@@ -96,7 +96,7 @@ public:
 	E_FireMethod currentFireMethod = E_FireMethod::EFM_Semi_Auto;
 	E_GunName currentGunName = E_GunName::EGN_Null;
 
-protected:
+public:
 	float damage;
 	float RPM;				//Rounds per minute
 	float verticalRecoil;
