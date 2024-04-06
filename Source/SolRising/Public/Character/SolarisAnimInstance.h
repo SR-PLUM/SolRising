@@ -35,4 +35,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = State)
 	bool IsEquippedGun;
+
+	UPROPERTY(BlueprintReadOnly, Category = State)
+	bool IsAiming;
 };
