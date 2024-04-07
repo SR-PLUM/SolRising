@@ -239,7 +239,16 @@ bool ASolaris::LineTracingMouse(FHitResult& CameraHit)
 
 	if (World)
 	{
-		FVector StartCameraTrace = GetCameraLocation();
+		FVector StartCameraTrace;  //= GetCameraLocation();
+		if (ViewCamera->IsActive())
+		{
+			StartCameraTrace = ViewCamera->GetComponentLocation();
+		}
+		else if (FPCamera->IsActive())
+		{
+			StartCameraTrace = FPCamera->GetComponentLocation();
+		}
+		
 		FVector EndCameraTrace = StartCameraTrace + (GetCameraRotation().Vector() * TraceDistance);
 		ECollisionChannel ECC_CameraHit = ECC_Visibility;
 		bool bIsHitCamera = World->LineTraceSingleByChannel(CameraHit, StartCameraTrace, EndCameraTrace, ECC_CameraHit);
@@ -264,6 +273,24 @@ void ASolaris::TogglePerspective()
 	{
 		ViewCamera->Activate();
 		FPCamera->Deactivate();
+	}
+}
+
+void ASolaris::Aiming()
+{
+	if (ViewCamera->IsActive() == true)
+	{
+		FPCamera->Activate();
+		ViewCamera->Deactivate();
+
+		IsAiming = true;
+	}
+	else if (ViewCamera->IsActive() == false)
+	{
+		ViewCamera->Activate();
+		FPCamera->Deactivate();
+
+		IsAiming = false;
 	}
 }
 

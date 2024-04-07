@@ -67,6 +67,8 @@ public:
 	FRotator GetCameraRotation();
 
 	void TogglePerspective();
+
+	void Aiming();
 	UPROPERTY()
 	bool IsAiming = false;
 

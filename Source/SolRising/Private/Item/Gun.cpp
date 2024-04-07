@@ -183,7 +183,7 @@ void AGun::OnFire()
 	}
 
 	auto yawRecoil = FMath::RandRange(-100, 100);
-	auto pitchRecoil = FMath::RandRange(-200, 0);
+	auto pitchRecoil = FMath::RandRange(-200, -100);
 
 	OwningCharacter->AddControllerYawInput(yawRecoil / 100);
 	OwningCharacter->AddControllerPitchInput(pitchRecoil / 100);
