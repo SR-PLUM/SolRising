@@ -137,6 +137,5 @@ public:
 	void Reroad();
 	void ReloadDelay();
 	void Aiming();
-	void AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName);
 	void SetOwningCharacter(ASolaris* owningCharacter);
 };

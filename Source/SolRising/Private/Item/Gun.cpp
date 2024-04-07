@@ -261,12 +261,6 @@ void AGun::Aiming()
 {
 }
 
-void AGun::AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName)
-{
-	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-	RootComponent->AttachToComponent(InParent, TransformRules, SocketName);
-}
-
 void AGun::SetOwningCharacter(ASolaris* owningCharacter)
 {
 	OwningCharacter = owningCharacter;
