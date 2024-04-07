@@ -29,4 +29,6 @@ private:
 
 public:
 	float weight;
+
+	void AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName);
 };

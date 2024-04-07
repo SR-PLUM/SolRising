@@ -29,6 +29,7 @@ public:
 	void LookUp(float Value);
 	void Jump();
 
+	void Aiming();
 	void Fire();
 	void Interaction();
 	void ToggleCamera();

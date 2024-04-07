@@ -67,6 +67,8 @@ public:
 	FRotator GetCameraRotation();
 
 	void TogglePerspective();
+
+	void Aiming();
 	UPROPERTY()
 	bool IsAiming = false;
 
@@ -78,4 +80,6 @@ private:
 public:
 	float GetHP();
 	void SetHP(float setHP);
+
+	float GetCurrentGunDamage();
 };
