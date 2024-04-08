@@ -114,8 +114,11 @@ void ASolaris::Pick()
 		auto CameraHitDoor = Cast<ADoor>(CameraHit.GetActor());
 		if (CameraHitDoor)
 		{
-			CameraHitDoor->Open();
-			return;
+			if (GetDistanceTo(CameraHitDoor) <= 200.f)
+			{
+				CameraHitDoor->Open();
+				return;
+			}
 		}
 
 		auto CameraHitItem = Cast<AItem>(CameraHit.GetActor());
