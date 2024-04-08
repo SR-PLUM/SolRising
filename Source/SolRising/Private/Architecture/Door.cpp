@@ -55,23 +55,38 @@ void ADoor::Tick(float DeltaTime)
 	{
 		if (!Door)
 			return;
-		if (Door->GetRelativeRotation().Yaw <= 90)
+
+		if (OpenDirection > 0)
 		{
-			Door->AddRelativeRotation(FRotator(0, DeltaRotate * DeltaTime, 0));
+			if (Door->GetRelativeRotation().Yaw > -90)
+			{
+				Door->AddRelativeRotation(FRotator(0, -DeltaRotate * DeltaTime, 0));
+			}
+		}
+		else
+		{
+			if (Door->GetRelativeRotation().Yaw < 90)
+			{
+				Door->AddRelativeRotation(FRotator(0, DeltaRotate * DeltaTime, 0));
+			}
 		}
 	}
 	else
 	{
 		if (!Door)
 			return;
-		if (Door->GetRelativeRotation().Yaw >= 0)
+		if (Door->GetRelativeRotation().Yaw > 0.5f)
 		{
 			Door->AddRelativeRotation(FRotator(0, -DeltaRotate * DeltaTime, 0));
+		}
+		else if (Door->GetRelativeRotation().Yaw < -0.5f)
+		{
+			Door->AddRelativeRotation(FRotator(0, DeltaRotate * DeltaTime, 0));
 		}
 	}
 }
 
-void ADoor::Open()
+void ADoor::Open(FVector _ActorLocation)
 {
 	if (IsOpen)
 	{
@@ -79,6 +94,11 @@ void ADoor::Open()
 	}
 	else
 	{
+		FVector DoorToActor = (_ActorLocation - GetActorLocation()) * FVector(1, 1, 0);
+		FVector DoorVector = GetActorForwardVector() * FVector(1, 1, 0);
+
+		OpenDirection = FVector::DotProduct(DoorToActor, DoorVector);
+
 		IsOpen = true;
 	}
 }
