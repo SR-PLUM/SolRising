@@ -33,8 +33,12 @@ ASolaris::ASolaris()
 	ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
 	ViewCamera->SetupAttachment(CameraBoom);
 
+	FPCameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("FPCameraBoom"));
+	FPCameraBoom->SetupAttachment(GetMesh());
+	FPCameraBoom->TargetArmLength = 10.f;
+
 	FPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FPCamera"));
-	FPCamera->SetupAttachment(GetMesh());
+	FPCamera->SetupAttachment(FPCameraBoom);
 
 	PickItemRange = CreateDefaultSubobject<USphereComponent>(TEXT("PickItemRange"));
 	PickItemRange->SetupAttachment(RootComponent);
@@ -259,10 +263,15 @@ FVector ASolaris::GetCameraLocation()
 
 FRotator ASolaris::GetCameraRotation()
 {
-	if(!ViewCamera)
+	if(!ViewCamera || !FPCamera)
 		return FRotator();
 
-	return ViewCamera->GetComponentRotation();
+	if (ViewCamera->IsActive())
+		return ViewCamera->GetComponentRotation();
+	else if (FPCamera->IsActive())
+		return FPCamera->GetComponentRotation();
+	else
+		return FRotator();
 }
 
 bool ASolaris::LineTracingMouse(FHitResult& CameraHit)
@@ -272,14 +281,17 @@ bool ASolaris::LineTracingMouse(FHitResult& CameraHit)
 
 	if (World)
 	{
-		FVector StartCameraTrace;  //= GetCameraLocation();
-		if (ViewCamera->IsActive())
+		FVector StartCameraTrace;
+		if (ViewCamera && FPCamera)
 		{
-			StartCameraTrace = ViewCamera->GetComponentLocation();
-		}
-		else if (FPCamera->IsActive())
-		{
-			StartCameraTrace = FPCamera->GetComponentLocation();
+			if (ViewCamera->IsActive())
+			{
+				StartCameraTrace = ViewCamera->GetComponentLocation();
+			}
+			else if (FPCamera->IsActive())
+			{
+				StartCameraTrace = FPCamera->GetComponentLocation();
+			}
 		}
 		
 		FVector EndCameraTrace = StartCameraTrace + (GetCameraRotation().Vector() * TraceDistance);

@@ -45,6 +45,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* ViewCamera;
 	UPROPERTY(VisibleAnywhere)
+	class USpringArmComponent* FPCameraBoom;
+	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* FPCamera;
 	UPROPERTY(VisibleAnywhere)
 	class USphereComponent* PickItemRange;
