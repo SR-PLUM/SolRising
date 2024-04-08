@@ -104,9 +104,3 @@ void ABag::AddAmmoCount(int AmmoType, int AmmoCount)
 {
 	currentAmmoCount[AmmoType] += AmmoCount;
 }
-
-void ABag::AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName)
-{
-	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
-	RootComponent->AttachToComponent(InParent, TransformRules, SocketName);
-}

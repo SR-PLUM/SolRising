@@ -60,12 +60,17 @@ public:
 	UFUNCTION()
 	void OnItemEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
 	AGun* GetMainGun();
 
 	FVector GetCameraLocation();
 	FRotator GetCameraRotation();
 
 	void TogglePerspective();
+
+	void Aiming();
+	UPROPERTY()
+	bool IsAiming = false;
 
 	bool LineTracingMouse(FHitResult& CameraHit);
 
@@ -75,4 +80,6 @@ private:
 public:
 	float GetHP();
 	void SetHP(float setHP);
+
+	float GetCurrentGunDamage();
 };

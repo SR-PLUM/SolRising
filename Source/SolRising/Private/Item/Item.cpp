@@ -26,3 +26,9 @@ void AItem::Tick(float DeltaTime)
 
 }
 
+void AItem::AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName)
+{
+	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
+	RootComponent->AttachToComponent(InParent, TransformRules, SocketName);
+}
+
