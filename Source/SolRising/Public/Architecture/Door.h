@@ -27,11 +27,13 @@ protected:
 	bool IsOpen = false;
 	UPROPERTY()
 	float DeltaRotate = 100;
+	UPROPERTY()
+	float OpenDirection = 0.f;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void Open();
+	void Open(FVector ActorLocation);
 };
