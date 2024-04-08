@@ -156,7 +156,7 @@ void APC_SolRising::Interaction()
 		Solaris = TryGetSolaris;
 	}
 
-	Solaris->Pick();
+	Solaris->Interaction();
 }
 
 void APC_SolRising::ToggleCamera()
