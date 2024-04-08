@@ -32,7 +32,12 @@ public:
 	void LookUp(float Value);
 
 	UFUNCTION()
-	void Pick();
+	void Interaction();
+	UFUNCTION()
+	void Pick(AItem* pickedItem);
+
+	UFUNCTION()
+	bool CanPick(float ItemWeight);
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -73,6 +78,17 @@ public:
 	bool IsAiming = false;
 
 	bool LineTracingMouse(FHitResult& CameraHit);
+
+	const float baseMaxWeight = 20.f;
+	UPROPERTY()
+	float MaxWeight = 20.f;
+	UPROPERTY()
+	float CurrentWeight = 0.f;
+
+	UPROPERTY()
+	int32 currentAmmoCount[2];
+	UPROPERTY()
+	TArray<class AItem*> havingItems;
 
 private:
 	float healthPoint;

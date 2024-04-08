@@ -19,9 +19,6 @@ class SOLRISING_API ABag : public AItem
 {
 	GENERATED_BODY()
 public:
-	const float baseMaxWeight = 20.f;
-
-public:
 	// Sets default values for this actor's properties
 	ABag();
 
@@ -37,7 +34,6 @@ private:
 	float maxWeight;
 
 public:
-	float currentWeight;
 	float GetMaxWeight();
 	
 private:
@@ -49,15 +45,4 @@ private:
 		class UStaticMesh* Lv2BagMesh;
 	UPROPERTY(EditAnywhere)
 		class UStaticMesh* Lv3BagMesh;
-
-	UPROPERTY()
-	TArray<class AItem*> havingItems;
-
-	int32 currentAmmoCount[2];
-
-public:
-	bool CanPick(float itemWeight);
-	
-	void AddItem(AItem* item);
-	void AddAmmoCount(int AmmoType ,int AmmoCount);
 };

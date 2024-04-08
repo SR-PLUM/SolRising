@@ -39,8 +39,6 @@ ASolaris::ASolaris()
 	PickItemRange = CreateDefaultSubobject<USphereComponent>(TEXT("PickItemRange"));
 	PickItemRange->SetupAttachment(RootComponent);
 
-	Bag = CreateDefaultSubobject<ABag>(TEXT("Bag"));
-
 	healthPoint = 100.f;
 }
 
@@ -102,15 +100,17 @@ void ASolaris::LookUp(float Value)
 	//UE_LOG(LogTemp, Warning, TEXT("%f"), GetController()->GetControlRotation().Pitch)
 }
 
-void ASolaris::Pick()
+void ASolaris::Interaction()
 {
 	AItem* pickedItem = nullptr;
 
 	FHitResult CameraHit;
 	auto bIsCameraHit = LineTracingMouse(CameraHit);
 
+	//Interaction Using Mouse Cursor
 	if (bIsCameraHit)
 	{
+		//Door Action
 		auto CameraHitDoor = Cast<ADoor>(CameraHit.GetActor());
 		if (CameraHitDoor)
 		{
@@ -121,6 +121,7 @@ void ASolaris::Pick()
 			}
 		}
 
+		//Pick Action Using Mouse Cursor
 		auto CameraHitItem = Cast<AItem>(CameraHit.GetActor());
 		if (CameraHitItem)
 		{
@@ -128,24 +129,32 @@ void ASolaris::Pick()
 		}
 	}
 
+	Pick(pickedItem);
+}
+
+void ASolaris::Pick(AItem* pickedItem)
+{
+	//If Can't Detect Any Item at Mouse Cursor
+	//Check Item Near by Solaris
 	if (!pickedItem)
 	{
 		if (OverlappedItem.IsEmpty())
 			return;
 
 		pickedItem = OverlappedItem[0];
-		OverlappedItem.Remove(pickedItem);
+		//OverlappedItem.Remove(pickedItem);
 	}
 
+	//If PickedItem is Gun
 	AGun* gun = Cast<AGun>(pickedItem);
 	if (gun)
 	{
 		if (MainGun == nullptr)
 		{
+			//자동 장착
 			MainGun = gun;
 			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
 			MainGun->SetOwningCharacter(this);
-			UE_LOG(LogTemp, Warning, TEXT("총 장착"))
 		}
 		else if (SubGun == nullptr)
 		{
@@ -162,43 +171,58 @@ void ASolaris::Pick()
 			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
 			MainGun->SetOwningCharacter(this);
 		}
+
+		OverlappedItem.Remove(pickedItem);
+		return;
 	}
 
+	//If PickedItem is Bag
 	ABag* bag = Cast<ABag>(pickedItem);
 	if (bag)
 	{
-		if (Bag == nullptr || bag->GetMaxWeight() >= Bag->GetMaxWeight())
+		if (MaxWeight <= bag->GetMaxWeight())
 		{
 			Bag = bag;
-			UE_LOG(LogTemp, Warning, TEXT("새로 먹은 가방 최대 용량 : %f, 현재 가방용량 : %f"), Bag->GetMaxWeight(), Bag->currentWeight)
+			MaxWeight = bag->GetMaxWeight();
 			Bag->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
-			//TODO 소켓 장착
+
+			UE_LOG(LogTemp, Warning, TEXT("새로 먹은 가방 최대 용량 : %f, 현재 가방용량 : %f"), Bag->GetMaxWeight(), CurrentWeight);
+
+			OverlappedItem.Remove(pickedItem);
 		}
+
+		return;
 	}
 
+	//If PickedItem is Ammo
 	AAmmo* ammo = Cast<AAmmo>(pickedItem);
-	if (ammo && Bag != nullptr)
+	if (ammo)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ammo 이며 bag 있음"))
-		if (Bag->CanPick(ammo->weight))
+		if (CanPick(ammo->weight))
 		{
-			Bag->currentWeight += ammo->weight;
-			Bag->AddItem(pickedItem);
-			Bag->AddAmmoCount(ammo->ammoType_gen, ammo->count);
+			CurrentWeight += ammo->weight;
+			currentAmmoCount[ammo->ammoType_gen] += ammo->count;
+
+			UE_LOG(LogTemp, Warning, TEXT("총알 획득 현재 용량 : %f / %f"), CurrentWeight, MaxWeight);
 
 			ammo->Destroy();
-
-			UE_LOG(LogTemp, Warning, TEXT("총알 획득 현재 용량 : %f / %f"), Bag->currentWeight, Bag->GetMaxWeight())
-		}			
+			OverlappedItem.Remove(ammo);
+		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("총알 획득 실패"))
+			UE_LOG(LogTemp, Warning, TEXT("총알 획득 실패"));
 		}
+
+		return;
 	}
-	else if (ammo && Bag == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Bag 없음"))
-	}
+}
+
+bool ASolaris::CanPick(float itemWeight)
+{
+	if (itemWeight <= MaxWeight - CurrentWeight)
+		return true;
+	else
+		return false;
 }
 
 void ASolaris::OnItemBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

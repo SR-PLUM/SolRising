@@ -2,6 +2,7 @@
 
 
 #include "Item/Bag.h"
+#include "Character/Solaris.h"
 #include "Components/SphereComponent.h"
 
 ABag::ABag()
@@ -20,8 +21,6 @@ ABag::ABag()
 		auto SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ItemSceneComponent"));
 		SceneComponent->SetupAttachment(RootComponent);
 	}
-
-	maxWeight = baseMaxWeight;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_1_Bag"));
 	Lv1BagMesh = Mesh1.Object;
@@ -85,22 +84,4 @@ void ABag::Tick(float DeltaTime)
 float ABag::GetMaxWeight()
 {
 	return maxWeight;
-}
-
-bool ABag::CanPick(float itemWeight)
-{
-	if (itemWeight <= maxWeight - currentWeight)
-		return true;
-	else
-		return false;
-}
-
-void ABag::AddItem(AItem* item)
-{
-	havingItems.Add(item);
-}
-
-void ABag::AddAmmoCount(int AmmoType, int AmmoCount)
-{
-	currentAmmoCount[AmmoType] += AmmoCount;
 }
