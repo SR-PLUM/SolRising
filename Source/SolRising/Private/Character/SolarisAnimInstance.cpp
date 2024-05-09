@@ -42,19 +42,14 @@ void USolarisAnimInstance::NativeUpdateAnimation(float DeltaTime)
 			IsEquippedGun = true;
 			Solaris->bUseControllerRotationYaw = true;
 
-			if (Solaris->IsAiming)
-			{
-				IsAiming = true;
-			}
-			else
-			{
-				IsAiming = false;
-			}
+			IsAiming = Solaris->IsAiming;
 		}
 		else
 		{
 			IsEquippedGun = false;
 			Solaris->bUseControllerRotationYaw = false;
 		}
+
+		GroundPose = Solaris->GroundPose;
 	}
 }

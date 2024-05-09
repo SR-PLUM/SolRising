@@ -33,4 +33,6 @@ public:
 	void Fire();
 	void Interaction();
 	void ToggleCamera();
+	void Kneel();
+	void Prone();
 };

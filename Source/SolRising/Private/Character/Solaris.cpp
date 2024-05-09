@@ -221,6 +221,30 @@ void ASolaris::Pick(AItem* pickedItem)
 	}
 }
 
+void ASolaris::Kneel()
+{
+	if (GroundPose == E_GroundPose::EGP_Kneel)
+	{
+		GroundPose = E_GroundPose::EGP_Standing;
+	}
+	else
+	{
+		GroundPose = E_GroundPose::EGP_Kneel;
+	}
+}
+
+void ASolaris::Prone()
+{
+	if (GroundPose == E_GroundPose::EGP_Prone)
+	{
+		GroundPose = E_GroundPose::EGP_Standing;
+	}
+	else
+	{
+		GroundPose = E_GroundPose::EGP_Prone;
+	}
+}
+
 bool ASolaris::CanPick(float itemWeight)
 {
 	if (itemWeight <= MaxWeight - CurrentWeight)
@@ -323,17 +347,17 @@ void ASolaris::TogglePerspective()
 
 void ASolaris::Aiming()
 {
-	if (ViewCamera->IsActive() == true)
+	if (IsAiming == false)
 	{
-		FPCamera->Activate();
-		ViewCamera->Deactivate();
+		//FPCamera->Activate();
+		//ViewCamera->Deactivate();
 
 		IsAiming = true;
 	}
-	else if (ViewCamera->IsActive() == false)
+	else if (IsAiming == true)
 	{
-		ViewCamera->Activate();
-		FPCamera->Deactivate();
+		//ViewCamera->Activate();
+		//FPCamera->Deactivate();
 
 		IsAiming = false;
 	}
