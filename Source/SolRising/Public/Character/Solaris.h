@@ -91,6 +91,11 @@ public:
 	UPROPERTY()
 	bool IsAiming = false;
 
+	UFUNCTION()
+	void PlayFireMontage();
+	UPROPERTY(EditDefaultsOnly)
+	UAnimMontage* FireMontage;
+
 	bool LineTracingMouse(FHitResult& CameraHit);
 
 	E_GroundPose GroundPose = E_GroundPose::EGP_Standing;

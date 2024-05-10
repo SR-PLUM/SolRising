@@ -365,6 +365,17 @@ void ASolaris::Aiming()
 	}
 }
 
+void ASolaris::PlayFireMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && FireMontage)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayFireMonatge"));
+		AnimInstance->Montage_Play(FireMontage);
+		AnimInstance->Montage_JumpToSection("IdleFire", FireMontage);
+	}
+}
+
 float ASolaris::GetHP()
 {
 	return healthPoint;
