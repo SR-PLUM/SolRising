@@ -157,6 +157,8 @@ void ASolaris::Pick(AItem* pickedItem)
 		{
 			//자동 장착
 			MainGun = gun;
+			CurrentGun = MainGun;
+
 			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
 			MainGun->SetOwningCharacter(this);
 

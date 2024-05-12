@@ -57,7 +57,7 @@ public:
 
 private:					
 	//M416
-	float M416Damage;
+	float M416Damage = 10.0;
 	float M416RPM;
 	float M416VerticalRecoil;
 	float M416HorizontalRecoil;
@@ -69,19 +69,19 @@ private:
 		UAnimMontage* M416FireAnimation;
 
 	//SCAR
-	float SCARDamage;
-	float SCARRPM;
-	float SCARVerticalRecoil;
-	float SCARHorizontalRecoil;
+	float AK74UDamage = 20.0;
+	float AK74URPM;
+	float AK74UVerticalRecoil;
+	float AK74UHorizontalRecoil;
 
 	UPROPERTY(EditAnywhere)
-		USoundBase* SCARFireSound;
+		USoundBase* AK74UFireSound;
 
 	UPROPERTY(EditAnywhere)
-		UAnimMontage* SCARFireAnimation;
+		UAnimMontage* AK74UFireAnimation;
 	
 	//AK47
-	float AK47Damage;
+	float AK47Damage = 30.0;
 	float AK47RPM;
 	float AK47VerticalRecoil;
 	float AK47HorizontalRecoil;
