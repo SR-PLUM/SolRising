@@ -265,3 +265,24 @@ void AGun::SetOwningCharacter(ASolaris* owningCharacter)
 {
 	OwningCharacter = owningCharacter;
 }
+
+int32 AGun::GetLoadedAmmo()
+{
+	return loadedAmmo;
+}
+
+float AGun::GetAmmoWeight()
+{
+	if (currentGunName == E_GunName::EGN_M416)
+		return 0.2 * loadedAmmo;
+	else
+		return 0.4 * loadedAmmo;
+}
+
+int32 AGun::GetAmmoType()
+{
+	if (currentGunName == E_GunName::EGN_M416)
+		return 0;
+	else
+		return 1;
+}

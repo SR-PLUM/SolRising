@@ -25,6 +25,9 @@ void APC_SolRising::SetupInputComponent()
 	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &APC_SolRising::Fire);
 	InputComponent->BindAction("Interaction", EInputEvent::IE_Pressed, this, &APC_SolRising::Interaction);
 	InputComponent->BindAction("ToggleCamera", EInputEvent::IE_Pressed, this, &APC_SolRising::ToggleCamera);
+
+	InputComponent->BindAction("SelectMainGun", EInputEvent::IE_Pressed, this, &APC_SolRising::SelectMainGun);
+	InputComponent->BindAction("SelectSubGun", EInputEvent::IE_Pressed, this, &APC_SolRising::SelectSubGun);
 }
 
 void APC_SolRising::MoveForward(float Value)
@@ -173,4 +176,40 @@ void APC_SolRising::ToggleCamera()
 	}
 
 	Solaris->TogglePerspective();
+}
+
+void APC_SolRising::SelectMainGun()
+{
+	if (Solaris == nullptr)
+	{
+		auto TryGetSolaris = Cast<ASolaris>(GetPawn());
+		if (TryGetSolaris == nullptr)
+		{
+			return;
+		}
+
+		Solaris = TryGetSolaris;
+	}
+
+	Solaris->CurrentGun = Solaris->GetMainGun();
+
+	Solaris->AttachMainGun();
+}
+
+void APC_SolRising::SelectSubGun()
+{
+	if (Solaris == nullptr)
+	{
+		auto TryGetSolaris = Cast<ASolaris>(GetPawn());
+		if (TryGetSolaris == nullptr)
+		{
+			return;
+		}
+
+		Solaris = TryGetSolaris;
+	}
+
+	Solaris->CurrentGun = Solaris->GetSubGun();
+
+	Solaris->AttachSubGun();
 }

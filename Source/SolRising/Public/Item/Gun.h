@@ -138,4 +138,9 @@ public:
 	void ReloadDelay();
 	void Aiming();
 	void SetOwningCharacter(ASolaris* owningCharacter);
+
+public:
+	int32 GetLoadedAmmo();
+	float GetAmmoWeight();
+	int32 GetAmmoType();
 };
