@@ -27,6 +27,7 @@ void APC_SolRising::SetupInputComponent()
 	InputComponent->BindAction("ToggleCamera", EInputEvent::IE_Pressed, this, &APC_SolRising::ToggleCamera);
 	InputComponent->BindAction("Kneel", EInputEvent::IE_Pressed, this, &APC_SolRising::Kneel);
 	InputComponent->BindAction("Prone", EInputEvent::IE_Pressed, this, &APC_SolRising::Prone);
+	InputComponent->BindAction("Inventory", EInputEvent::IE_Pressed, this, &APC_SolRising::Inventory);
 }
 
 void APC_SolRising::MoveForward(float Value)
@@ -63,6 +64,9 @@ void APC_SolRising::MoveRight(float Value)
 
 void APC_SolRising::Turn(float Value)
 {
+	if (bShowMouseCursor)
+		return;
+
 	if (Solaris == nullptr)
 	{
 		auto TryGetSolaris = Cast<ASolaris>(GetPawn());
@@ -79,6 +83,9 @@ void APC_SolRising::Turn(float Value)
 
 void APC_SolRising::LookUp(float Value)
 {
+	if (bShowMouseCursor)
+		return;
+
 	if (Solaris == nullptr)
 	{
 		auto TryGetSolaris = Cast<ASolaris>(GetPawn());
@@ -111,6 +118,9 @@ void APC_SolRising::Jump()
 
 void APC_SolRising::Aiming()
 {
+	if (bShowMouseCursor)
+		return;
+
 	if (Solaris == nullptr)
 	{
 		auto TryGetSolaris = Cast<ASolaris>(GetPawn());
@@ -127,6 +137,9 @@ void APC_SolRising::Aiming()
 
 void APC_SolRising::Fire()
 {
+	if (bShowMouseCursor)
+		return;
+
 	if (Solaris == nullptr)
 	{
 		auto TryGetSolaris = Cast<ASolaris>(GetPawn());
@@ -207,4 +220,34 @@ void APC_SolRising::Prone()
 	}
 
 	Solaris->Prone();
+}
+
+void APC_SolRising::Inventory()
+{
+	if (Solaris == nullptr)
+	{
+		auto TryGetSolaris = Cast<ASolaris>(GetPawn());
+		if (TryGetSolaris == nullptr)
+		{
+			return;
+		}
+
+		Solaris = TryGetSolaris;
+	}
+
+	bool IsOpenedInventory = Solaris->Inventory();
+	if (IsOpenedInventory)
+	{
+		int32 X, Y;
+		GetViewportSize(X, Y);
+		SetMouseLocation(X / 2, Y / 2);
+		bShowMouseCursor = true;
+	}
+	else
+	{
+		FInputModeGameOnly GameMode;
+		SetInputMode(GameMode);
+
+		bShowMouseCursor = false;
+	}
 }

@@ -47,6 +47,8 @@ public:
 	void Kneel();
 	UFUNCTION()
 	void Prone();
+	UFUNCTION()
+	bool Inventory();
 
 	UFUNCTION()
 	bool CanPick(float ItemWeight);
@@ -110,6 +112,19 @@ public:
 	int32 currentAmmoCount[2];
 	UPROPERTY()
 	TArray<class AItem*> havingItems;
+
+	//Inventory
+	UPROPERTY()
+	TSubclassOf<UUserWidget> InventoryWidgetClass;
+	UPROPERTY()
+	class UInventory* InventoryWidget;
+
+	UPROPERTY()
+	bool IsInventoryOpen = false;
+
+	UFUNCTION()
+	void RefreshInventory();
+	
 
 private:
 	float healthPoint;

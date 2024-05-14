@@ -9,12 +9,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ActorComponent.h"
+#include "Blueprint/UserWidget.h"
 
 #include "Item/Item.h"
 #include "Item/Gun.h"
 #include "Item/Bag.h"
 #include "Item/Ammo.h"
 #include "Architecture/Door.h"
+#include "UI/Inventory.h"
 
 ASolaris::ASolaris()
 {
@@ -44,6 +46,12 @@ ASolaris::ASolaris()
 	PickItemRange->SetupAttachment(RootComponent);
 
 	healthPoint = 100.f;
+
+	ConstructorHelpers::FClassFinder<UUserWidget> InventoryBPClass(TEXT("/Game/Blueprints/UI/WBP_Inventory"));
+	if (InventoryBPClass.Class != nullptr)
+	{
+		InventoryWidgetClass = InventoryBPClass.Class;
+	}
 }
 
 void ASolaris::BeginPlay()
@@ -247,6 +255,48 @@ void ASolaris::Prone()
 	}
 }
 
+bool ASolaris::Inventory()
+{
+	if (!InventoryWidget)
+	{
+		if (InventoryWidgetClass)
+		{
+			InventoryWidget = Cast<UInventory>(CreateWidget(GetWorld(), InventoryWidgetClass));
+			if (InventoryWidget)
+			{
+				InventoryWidget->Owner = this;
+
+				for (auto item : OverlappedItem)
+				{
+					InventoryWidget->AddList(item);
+				}
+
+				InventoryWidget->AddToViewport();
+				IsInventoryOpen = true;
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	if (IsInventoryOpen)
+	{
+		InventoryWidget->SetVisibility(ESlateVisibility::Hidden);
+		IsInventoryOpen = false;
+
+		return false;
+	}
+	else
+	{
+		InventoryWidget->SetVisibility(ESlateVisibility::Visible);
+		IsInventoryOpen = true;
+
+		return true;
+	}
+}
+
 bool ASolaris::CanPick(float itemWeight)
 {
 	if (itemWeight <= MaxWeight - CurrentWeight)
@@ -260,6 +310,11 @@ void ASolaris::OnItemBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	if (AItem* item = Cast<AItem>(OtherActor))
 	{
 		OverlappedItem.Add(item);
+
+		if (InventoryWidget)
+		{
+			InventoryWidget->AddList(item);
+		}
 	}
 }
 
@@ -268,6 +323,11 @@ void ASolaris::OnItemEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	if (AItem* item = Cast<AItem>(OtherActor))
 	{
 		OverlappedItem.Remove(item);
+
+		if (InventoryWidget)
+		{
+			InventoryWidget->RemoveList(item);
+		}
 	}
 }
 
@@ -351,15 +411,15 @@ void ASolaris::Aiming()
 {
 	if (IsAiming == false)
 	{
-		//FPCamera->Activate();
-		//ViewCamera->Deactivate();
+		FPCamera->Activate();
+		ViewCamera->Deactivate();
 
 		IsAiming = true;
 	}
 	else if (IsAiming == true)
 	{
-		//ViewCamera->Activate();
-		//FPCamera->Deactivate();
+		ViewCamera->Activate();
+		FPCamera->Deactivate();
 
 		IsAiming = false;
 	}
@@ -374,6 +434,11 @@ void ASolaris::PlayFireMontage()
 		AnimInstance->Montage_Play(FireMontage);
 		AnimInstance->Montage_JumpToSection("IdleFire", FireMontage);
 	}
+}
+
+void ASolaris::RefreshInventory()
+{
+
 }
 
 float ASolaris::GetHP()

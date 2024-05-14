@@ -35,4 +35,5 @@ public:
 	void ToggleCamera();
 	void Kneel();
 	void Prone();
+	void Inventory();
 };

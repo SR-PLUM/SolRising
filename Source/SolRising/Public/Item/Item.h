@@ -28,6 +28,7 @@ private:
 		class UStaticMeshComponent* ItemMesh;
 
 public:
+	FText itemName;
 	float weight;
 
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName);

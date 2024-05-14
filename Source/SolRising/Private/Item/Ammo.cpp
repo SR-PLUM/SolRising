@@ -31,6 +31,8 @@ AAmmo::AAmmo()
 	EAT_5Mesh = Mesh1.Object;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_7_62mm_Mag"));
 	EAT_7Mesh = Mesh2.Object;
+
+	itemName = FText::FromString("Ammo");
 }
 
 void AAmmo::BeginPlay()
