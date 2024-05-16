@@ -54,10 +54,10 @@ void AAmmoProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		ASolaris* Solaris = Cast<ASolaris>(OwningCharacter);
 
 		FVector HitLocation = Hit.Location;
-		FVector CapsuleLocation = enemy->GetCapsuleComponent()->GetComponentLocation();
-		float CapsuleHalfHeight = enemy->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-		float HeadshotHeight = 60.0f;
-		if (HitLocation.Z > CapsuleLocation.Z + CapsuleHalfHeight - HeadshotHeight)
+		FVector SocketLocation = enemy->GetMesh()->GetSocketLocation("HeadSocket");
+		float HeadshotDistance = 40.0f;
+
+		if ((HitLocation - SocketLocation).Size() < HeadshotDistance)
 		{
 			enemy->SetHP(enemy->GetHP() - (Solaris->GetCurrentGunDamage() * 2.0));
 			UE_LOG(LogTemp, Warning, TEXT("헤드샷! %f"), enemy->GetHP());
