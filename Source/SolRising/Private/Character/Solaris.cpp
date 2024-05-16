@@ -9,12 +9,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ActorComponent.h"
+#include "Blueprint/UserWidget.h"
 
 #include "Item/Item.h"
 #include "Item/Gun.h"
 #include "Item/Bag.h"
 #include "Item/Ammo.h"
 #include "Architecture/Door.h"
+#include "UI/Inventory.h"
 
 ASolaris::ASolaris()
 {
@@ -44,6 +46,12 @@ ASolaris::ASolaris()
 	PickItemRange->SetupAttachment(RootComponent);
 
 	healthPoint = 100.f;
+
+	ConstructorHelpers::FClassFinder<UUserWidget> InventoryBPClass(TEXT("/Game/Blueprints/UI/WBP_Inventory"));
+	if (InventoryBPClass.Class != nullptr)
+	{
+		InventoryWidgetClass = InventoryBPClass.Class;
+	}
 }
 
 void ASolaris::BeginPlay()
@@ -240,6 +248,74 @@ void ASolaris::Pick(AItem* pickedItem)
 	}
 }
 
+void ASolaris::Kneel()
+{
+	if (GroundPose == E_GroundPose::EGP_Kneel)
+	{
+		GroundPose = E_GroundPose::EGP_Standing;
+	}
+	else
+	{
+		GroundPose = E_GroundPose::EGP_Kneel;
+	}
+}
+
+void ASolaris::Prone()
+{
+	if (GroundPose == E_GroundPose::EGP_Prone)
+	{
+		GroundPose = E_GroundPose::EGP_Standing;
+		GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	}
+	else
+	{
+		GroundPose = E_GroundPose::EGP_Prone;
+		GetCharacterMovement()->MaxWalkSpeed = 200.f;
+	}
+}
+
+bool ASolaris::Inventory()
+{
+	if (!InventoryWidget)
+	{
+		if (InventoryWidgetClass)
+		{
+			InventoryWidget = Cast<UInventory>(CreateWidget(GetWorld(), InventoryWidgetClass));
+			if (InventoryWidget)
+			{
+				InventoryWidget->Owner = this;
+
+				for (auto item : OverlappedItem)
+				{
+					InventoryWidget->AddList(item);
+				}
+
+				InventoryWidget->AddToViewport();
+				IsInventoryOpen = true;
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	if (IsInventoryOpen)
+	{
+		InventoryWidget->SetVisibility(ESlateVisibility::Hidden);
+		IsInventoryOpen = false;
+
+		return false;
+	}
+	else
+	{
+		InventoryWidget->SetVisibility(ESlateVisibility::Visible);
+		IsInventoryOpen = true;
+
+		return true;
+	}
+}
+
 bool ASolaris::CanPick(float itemWeight)
 {
 	if (itemWeight <= MaxWeight - CurrentWeight)
@@ -253,6 +329,11 @@ void ASolaris::OnItemBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	if (AItem* item = Cast<AItem>(OtherActor))
 	{
 		OverlappedItem.Add(item);
+
+		if (InventoryWidget)
+		{
+			InventoryWidget->AddList(item);
+		}
 	}
 }
 
@@ -261,6 +342,11 @@ void ASolaris::OnItemEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	if (AItem* item = Cast<AItem>(OtherActor))
 	{
 		OverlappedItem.Remove(item);
+
+		if (InventoryWidget)
+		{
+			InventoryWidget->RemoveList(item);
+		}
 	}
 }
 
@@ -364,6 +450,22 @@ void ASolaris::Aiming()
 
 		IsAiming = false;
 	}
+}
+
+void ASolaris::PlayFireMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && FireMontage)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayFireMonatge"));
+		AnimInstance->Montage_Play(FireMontage);
+		AnimInstance->Montage_JumpToSection("IdleFire", FireMontage);
+	}
+}
+
+void ASolaris::RefreshInventory()
+{
+
 }
 
 float ASolaris::GetHP()

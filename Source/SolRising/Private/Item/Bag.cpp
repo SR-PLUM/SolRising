@@ -28,6 +28,8 @@ ABag::ABag()
 	Lv2BagMesh = Mesh2.Object;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_3_Bag"));
 	Lv3BagMesh = Mesh3.Object;	
+
+	itemName = FText::FromString("Bag");
 }
 
 // Called when the game starts or when spawned

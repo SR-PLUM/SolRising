@@ -36,7 +36,9 @@ AGun::AGun()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_KA74U_Y"));
 	AK74UMesh = Mesh2.Object;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/Blueprints/Item/StaticMesh/SM_AK47"));
-	AK47Mesh = Mesh3.Object;	
+	AK47Mesh = Mesh3.Object;
+
+	itemName = FText::FromString("Gun");
 }
 
 // Called when the game starts or when spawned
@@ -144,6 +146,7 @@ void AGun::OnFire()
 
 	if (!OwningCharacter) { return; }
 
+	//Fire Bullet
 	UWorld* const World = GetWorld();
 	if (World != nullptr)
 	{
@@ -182,6 +185,10 @@ void AGun::OnFire()
 		ammoProjectile->OwningCharacter = OwningCharacter;
 	}
 
+	//FireMontage
+	OwningCharacter->PlayFireMontage();
+
+	//Recoil
 	auto yawRecoil = FMath::RandRange(-100, 100);
 	auto pitchRecoil = FMath::RandRange(-200, -100);
 

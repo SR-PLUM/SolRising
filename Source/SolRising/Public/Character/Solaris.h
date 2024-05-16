@@ -6,6 +6,14 @@
 #include "GameFramework/Character.h"
 #include "Solaris.generated.h"
 
+UENUM(BlueprintType)
+enum class E_GroundPose : uint8
+{
+	EGP_Standing UMETA(DisplayName = "Standing"),
+	EGP_Kneel UMETA(DisplayName = "Kneel"),
+	EGP_Prone UMETA(DisplayName = "Prone"),
+};
+
 UCLASS()
 class SOLRISING_API ASolaris : public ACharacter
 {
@@ -35,6 +43,12 @@ public:
 	void Interaction();
 	UFUNCTION()
 	void Pick(AItem* pickedItem);
+	UFUNCTION()
+	void Kneel();
+	UFUNCTION()
+	void Prone();
+	UFUNCTION()
+	bool Inventory();
 
 	UFUNCTION()
 	bool CanPick(float ItemWeight);
@@ -87,7 +101,14 @@ public:
 	UPROPERTY()
 	bool IsAiming = false;
 
+	UFUNCTION()
+	void PlayFireMontage();
+	UPROPERTY(EditDefaultsOnly)
+	UAnimMontage* FireMontage;
+
 	bool LineTracingMouse(FHitResult& CameraHit);
+
+	E_GroundPose GroundPose = E_GroundPose::EGP_Standing;
 
 	const float baseMaxWeight = 20.f;
 	UPROPERTY()
@@ -99,6 +120,19 @@ public:
 	int32 currentAmmoCount[2];
 	UPROPERTY()
 	TArray<class AItem*> havingItems;
+
+	//Inventory
+	UPROPERTY()
+	TSubclassOf<UUserWidget> InventoryWidgetClass;
+	UPROPERTY()
+	class UInventory* InventoryWidget;
+
+	UPROPERTY()
+	bool IsInventoryOpen = false;
+
+	UFUNCTION()
+	void RefreshInventory();
+	
 
 private:
 	float healthPoint;

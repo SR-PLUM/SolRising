@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Solaris.h"
 #include "SolarisAnimInstance.generated.h"
 
 /**
@@ -38,4 +39,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = State)
 	bool IsAiming;
+
+	UPROPERTY(BlueprintReadOnly, Category = State)
+	E_GroundPose GroundPose;
 };
