@@ -165,19 +165,38 @@ void ASolaris::Pick(AItem* pickedItem)
 		{
 			//자동 장착
 			MainGun = gun;
+			CurrentGun = MainGun;
+
 			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
 			MainGun->SetOwningCharacter(this);
+
+			UE_LOG(LogTemp, Warning, TEXT("메인건 장착"));
 		}
 		else if (SubGun == nullptr)
 		{
 			SubGun = gun;
 			//TODO 소켓에 장착
+
+			gun->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+
+			UE_LOG(LogTemp, Warning, TEXT("서브건 장착"));
 		}
 		else
 		{
 			// TODO 
 			// 메인건에 장전되어 있는 총알 수거
+			if (GetMainGun()->GetLoadedAmmo() > 0)
+			{
+				if (CanPick(GetMainGun()->GetAmmoWeight()))
+				{
+					CurrentWeight += GetMainGun()->GetAmmoWeight();
+					currentAmmoCount[GetMainGun()->GetAmmoType()] += GetMainGun()->GetLoadedAmmo();
+				}
+			}
+			
 			// 메인건을 바닥으로 버림
+			MainGun->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+			UE_LOG(LogTemp, Warning, TEXT("메인건 버리기"));
 			// OverlappedItem에 메인건 추가
 			MainGun = gun;
 			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
@@ -339,6 +358,14 @@ AGun* ASolaris::GetMainGun()
 	return nullptr;
 }
 
+AGun* ASolaris::GetSubGun()
+{
+	if (SubGun)
+		return SubGun;
+
+	return nullptr;
+}
+
 FVector ASolaris::GetCameraLocation()
 {
 	if (!ViewCamera)
@@ -370,11 +397,11 @@ bool ASolaris::LineTracingMouse(FHitResult& CameraHit)
 		FVector StartCameraTrace;
 		if (ViewCamera && FPCamera)
 		{
-			if (ViewCamera->IsActive())
+			if (IsAiming == false)
 			{
 				StartCameraTrace = ViewCamera->GetComponentLocation();
 			}
-			else if (FPCamera->IsActive())
+			else if (IsAiming == true)
 			{
 				StartCameraTrace = FPCamera->GetComponentLocation();
 			}
@@ -395,12 +422,12 @@ bool ASolaris::LineTracingMouse(FHitResult& CameraHit)
 
 void ASolaris::TogglePerspective()
 {
-	if (ViewCamera->IsActive() == true)
+	if (IsAiming == false)
 	{
 		FPCamera->Activate();
 		ViewCamera->Deactivate();
 	}
-	else if (ViewCamera->IsActive() == false)
+	else if (IsAiming == true)
 	{
 		ViewCamera->Activate();
 		FPCamera->Deactivate();
@@ -453,9 +480,27 @@ void ASolaris::SetHP(float setHP)
 
 float ASolaris::GetCurrentGunDamage()
 {
-	if (MainGun)
-		return MainGun->damage;
+	if (CurrentGun)
+		return CurrentGun->damage;
 	else 
 		return 0.f;
+}
+
+void ASolaris::AttachMainGun()
+{
+	if (SubGun)
+	{
+		SubGun->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+	}
+	MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
+}
+
+void ASolaris::AttachSubGun()
+{
+	if (MainGun)
+	{
+		MainGun->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+	}
+	SubGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
 }
 

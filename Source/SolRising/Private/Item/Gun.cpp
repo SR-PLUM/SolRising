@@ -81,12 +81,12 @@ void AGun::BeginPlay()
 		}
 
 		currentGunName = E_GunName::EGN_AK74U;
-		damage = SCARDamage;
-		RPM = SCARRPM;
-		verticalRecoil = SCARVerticalRecoil;
-		horizontalRecoil = SCARHorizontalRecoil;
-		FireSound = SCARFireSound;
-		FireAnimation = SCARFireAnimation;
+		damage = AK74UDamage;
+		RPM = AK74URPM;
+		verticalRecoil = AK74UVerticalRecoil;
+		horizontalRecoil = AK74UHorizontalRecoil;
+		FireSound = AK74UFireSound;
+		FireAnimation = AK74UFireAnimation;
 		break;
 	case (uint8)(E_GunName::EGN_AK47):
 
@@ -271,4 +271,25 @@ void AGun::Aiming()
 void AGun::SetOwningCharacter(ASolaris* owningCharacter)
 {
 	OwningCharacter = owningCharacter;
+}
+
+int32 AGun::GetLoadedAmmo()
+{
+	return loadedAmmo;
+}
+
+float AGun::GetAmmoWeight()
+{
+	if (currentGunName == E_GunName::EGN_M416)
+		return 0.2 * loadedAmmo;
+	else
+		return 0.4 * loadedAmmo;
+}
+
+int32 AGun::GetAmmoType()
+{
+	if (currentGunName == E_GunName::EGN_M416)
+		return 0;
+	else
+		return 1;
 }

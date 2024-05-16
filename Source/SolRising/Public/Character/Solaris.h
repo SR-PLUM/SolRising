@@ -76,13 +76,21 @@ private:
 	class ABag* Bag;
 
 public:
+	UPROPERTY(VisibleAnywhere)
+	class AGun* CurrentGun = nullptr;
+
+public:
 	UFUNCTION()
 	void OnItemBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	void OnItemEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UFUNCTION()
 	AGun* GetMainGun();
+	AGun* GetSubGun();
+
+	void AttachMainGun();
+
+	void AttachSubGun();
 
 	FVector GetCameraLocation();
 	FRotator GetCameraRotation();

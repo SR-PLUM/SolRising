@@ -3,6 +3,7 @@
 
 #include "Projectile/AmmoProjectile.h"
 #include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 #include "Character/Solaris.h"
@@ -52,11 +53,27 @@ void AAmmoProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	{
 		ASolaris* Solaris = Cast<ASolaris>(OwningCharacter);
 
-		enemy->SetHP(enemy->GetHP() - Solaris->GetCurrentGunDamage());
-		UE_LOG(LogTemp, Warning, TEXT("%f"), enemy->GetHP());
+		FVector HitLocation = Hit.Location;
+		FVector SocketLocation = enemy->GetMesh()->GetSocketLocation("HeadSocket");
+		float HeadshotDistance = 40.0f;
+
+		if ((HitLocation - SocketLocation).Size() < HeadshotDistance)
+		{
+			enemy->SetHP(enemy->GetHP() - (Solaris->GetCurrentGunDamage() * 2.0));
+			UE_LOG(LogTemp, Warning, TEXT("헤드샷! %f"), enemy->GetHP());
+
+			Destroy();
+			
+		}
+		else
+		{
+			enemy->SetHP(enemy->GetHP() - Solaris->GetCurrentGunDamage());
+			UE_LOG(LogTemp, Warning, TEXT("몸 샷! %f"), enemy->GetHP());
+
+			Destroy();
+		}		
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherActor->GetName());
-	Destroy();
 }
 

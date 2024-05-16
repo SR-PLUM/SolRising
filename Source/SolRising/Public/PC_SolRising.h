@@ -33,6 +33,8 @@ public:
 	void Fire();
 	void Interaction();
 	void ToggleCamera();
+	void SelectMainGun();
+	void SelectSubGun();
 	void Kneel();
 	void Prone();
 	void Inventory();
