@@ -14,6 +14,7 @@
 #include "Item/Item.h"
 #include "Item/Gun.h"
 #include "Item/Bag.h"
+#include "Item/BulletproofVest.h"
 #include "Item/Ammo.h"
 #include "Architecture/Door.h"
 #include "UI/Inventory.h"
@@ -221,6 +222,20 @@ void ASolaris::Pick(AItem* pickedItem)
 
 			OverlappedItem.Remove(pickedItem);
 		}
+
+		return;
+	}
+
+	//If PickedItem is BulletproofVest
+	ABulletproofVest* vest = Cast<ABulletproofVest>(pickedItem);
+	if (vest)
+	{
+		CurrentVestDefence = vest->GetDefence();
+
+		UE_LOG(LogTemp, Warning, TEXT("조끼 방어력 : %f"), vest->GetDefence());
+
+		vest->Destroy();
+		OverlappedItem.Remove(vest);
 
 		return;
 	}

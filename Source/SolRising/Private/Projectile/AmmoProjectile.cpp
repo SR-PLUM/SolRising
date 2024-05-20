@@ -55,7 +55,8 @@ void AAmmoProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 
 		FVector HitLocation = Hit.Location;
 		FVector SocketLocation = enemy->GetMesh()->GetSocketLocation("HeadSocket");
-		float HeadshotDistance = 40.0f;
+
+		float HeadshotDistance = 35.0f;
 
 		if ((HitLocation - SocketLocation).Size() < HeadshotDistance)
 		{
@@ -67,7 +68,7 @@ void AAmmoProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		}
 		else
 		{
-			enemy->SetHP(enemy->GetHP() - Solaris->GetCurrentGunDamage());
+			enemy->SetHP(enemy->GetHP() - (Solaris->GetCurrentGunDamage() * enemy->CurrentVestDefence));
 			UE_LOG(LogTemp, Warning, TEXT("몸 샷! %f"), enemy->GetHP());
 
 			Destroy();
