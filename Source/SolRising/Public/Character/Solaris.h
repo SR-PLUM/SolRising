@@ -117,6 +117,9 @@ public:
 	float CurrentWeight = 0.f;
 
 	UPROPERTY()
+	float CurrentVestDefence = 1.f;
+
+	UPROPERTY()
 	int32 currentAmmoCount[2];
 	UPROPERTY()
 	TArray<class AItem*> havingItems;

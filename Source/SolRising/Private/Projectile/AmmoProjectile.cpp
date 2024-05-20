@@ -68,7 +68,7 @@ void AAmmoProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		}
 		else
 		{
-			enemy->SetHP(enemy->GetHP() - Solaris->GetCurrentGunDamage());
+			enemy->SetHP(enemy->GetHP() - (Solaris->GetCurrentGunDamage() * enemy->CurrentVestDefence));
 			UE_LOG(LogTemp, Warning, TEXT("몸 샷! %f"), enemy->GetHP());
 
 			Destroy();
