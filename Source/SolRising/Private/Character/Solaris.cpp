@@ -241,6 +241,11 @@ void ASolaris::Pick(AItem* pickedItem)
 
 			ammo->Destroy();
 			OverlappedItem.Remove(ammo);
+
+			if (InventoryWidget)
+			{
+				InventoryWidget->AddInventory(ammo);
+			}
 		}
 		else
 		{

@@ -44,6 +44,9 @@ public:
 	void RemoveList(class AItem* item);
 
 	UFUNCTION()
+	void AddInventory(class AItem* item);
+
+	UFUNCTION()
 	void RefreshMainGunSlot(class AGun* gun);
 
 	class ASolaris* Owner;

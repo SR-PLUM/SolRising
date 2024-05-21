@@ -41,6 +41,7 @@ void UInventory::AddList(AItem* item)
 	{
 		itemWidget->Item = item;
 		itemWidget->Owner = Owner;
+		itemWidget->isPickable = true;
 
 		if(itemWidget->ItemText)
 			itemWidget->ItemText->SetText(item->itemName);
@@ -60,6 +61,22 @@ void UInventory::RemoveList(AItem* item)
 	if (removedWidget)
 	{
 		PickableItemList->RemoveChild(removedWidget);
+	}
+}
+
+void UInventory::AddInventory(AItem* item)
+{
+	UItemWidget* itemWidget = CreateWidget<UItemWidget>(this, ItemWidgetClass);
+	if (itemWidget && PickedItemList)
+	{
+		itemWidget->Item = item;
+		itemWidget->Owner = Owner;
+		itemWidget->isPickable = false;
+
+		if (itemWidget->ItemText)
+			itemWidget->ItemText->SetText(item->itemName);
+
+		PickedItemList->AddChild(itemWidget);
 	}
 }
 

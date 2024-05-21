@@ -20,6 +20,6 @@ void UItemWidget::NativeOnInitialized()
 
 void UItemWidget::PickItem()
 {
-	if(Owner)
+	if(Owner && isPickable)
 		Owner->Pick(Item);
 }
