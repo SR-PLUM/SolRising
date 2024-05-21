@@ -8,6 +8,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Pawn.h"
 
+#include "UI/Inventory.h"
+
 AGun::AGun()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -145,6 +147,11 @@ void AGun::OnFire()
 	UE_LOG(LogTemp, Log, TEXT("Current Ammo : %d / %d"), loadedAmmo, remainAmmo);
 
 	if (!OwningCharacter) { return; }
+
+	if (OwningCharacter->InventoryWidget)
+	{
+		OwningCharacter->InventoryWidget->RefreshMainGunSlot(this);
+	}
 
 	//Fire Bullet
 	UWorld* const World = GetWorld();

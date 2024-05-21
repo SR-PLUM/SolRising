@@ -8,6 +8,7 @@
 
 #include "Item/Item.h"
 #include "UI/ItemWidget.h"
+#include "Item/Gun.h"
 
 UInventory::UInventory(const FObjectInitializer& ObjectInitializer) : UUserWidget(ObjectInitializer)
 {
@@ -60,4 +61,13 @@ void UInventory::RemoveList(AItem* item)
 	{
 		PickableItemList->RemoveChild(removedWidget);
 	}
+}
+
+void UInventory::RefreshMainGunSlot(AGun* gun)
+{
+	if (!gun) return;
+
+	//GunImg
+	GunName->SetText(gun->itemName);
+	Ammo->SetText(FText::FromString(FString::FromInt(gun->GetLoadedAmmo())));
 }

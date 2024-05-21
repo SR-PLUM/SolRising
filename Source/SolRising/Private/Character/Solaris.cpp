@@ -164,19 +164,13 @@ void ASolaris::Pick(AItem* pickedItem)
 	{
 		if (MainGun == nullptr)
 		{
-			//자동 장착
-			MainGun = gun;
+			SetMainGun(gun);
+
 			CurrentGun = MainGun;
-
-			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
-			MainGun->SetOwningCharacter(this);
-
-			UE_LOG(LogTemp, Warning, TEXT("메인건 장착"));
 		}
 		else if (SubGun == nullptr)
 		{
 			SubGun = gun;
-			//TODO 소켓에 장착
 
 			gun->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
 
@@ -195,13 +189,7 @@ void ASolaris::Pick(AItem* pickedItem)
 				}
 			}
 			
-			// 메인건을 바닥으로 버림
-			MainGun->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-			UE_LOG(LogTemp, Warning, TEXT("메인건 버리기"));
-			// OverlappedItem에 메인건 추가
-			MainGun = gun;
-			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
-			MainGun->SetOwningCharacter(this);
+			SetMainGun(gun);
 		}
 
 		OverlappedItem.Remove(pickedItem);
@@ -363,6 +351,18 @@ void ASolaris::OnItemEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 			InventoryWidget->RemoveList(item);
 		}
 	}
+}
+
+void ASolaris::SetMainGun(AGun* gun)
+{
+	MainGun = gun;
+
+	MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
+	MainGun->SetOwningCharacter(this);
+
+	InventoryWidget->RefreshMainGunSlot(MainGun);
+
+	UE_LOG(LogTemp, Warning, TEXT("메인건 장착"));
 }
 
 AGun* ASolaris::GetMainGun()
