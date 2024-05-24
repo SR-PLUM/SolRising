@@ -300,3 +300,27 @@ int32 AGun::GetAmmoType()
 	else
 		return 1;
 }
+
+FText AGun::GetGunName()
+{
+	FText gunName;
+
+	switch (currentGunName)
+	{
+	case E_GunName::EGN_M416:
+		gunName = FText::FromString("M416");
+		break;
+	case E_GunName::EGN_AK74U:
+		gunName = FText::FromString("AK74U");
+		break;
+	case E_GunName::EGN_AK47:
+		gunName = FText::FromString("AK47");
+		break;
+	case E_GunName::EGN_Null:
+		gunName = FText::FromString("Null");
+		break;
+	default:
+		break;
+	}
+	return gunName;
+}

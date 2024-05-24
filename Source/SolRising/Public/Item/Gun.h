@@ -143,4 +143,5 @@ public:
 	int32 GetLoadedAmmo();
 	float GetAmmoWeight();
 	int32 GetAmmoType();
+	FText GetGunName();
 };

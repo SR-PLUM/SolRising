@@ -170,9 +170,7 @@ void ASolaris::Pick(AItem* pickedItem)
 		}
 		else if (SubGun == nullptr)
 		{
-			SubGun = gun;
-
-			gun->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+			SetSubGun(gun);
 
 			UE_LOG(LogTemp, Warning, TEXT("서브건 장착"));
 		}
@@ -365,7 +363,10 @@ void ASolaris::SetMainGun(AGun* gun)
 	MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
 	MainGun->SetOwningCharacter(this);
 
-	InventoryWidget->RefreshMainGunSlot(MainGun);
+	if (InventoryWidget)
+	{
+		InventoryWidget->RefreshMainGunSlot(MainGun);
+	}
 
 	UE_LOG(LogTemp, Warning, TEXT("메인건 장착"));
 }
@@ -376,6 +377,18 @@ AGun* ASolaris::GetMainGun()
 		return MainGun;
 
 	return nullptr;
+}
+
+void ASolaris::SetSubGun(AGun* gun)
+{
+	SubGun = gun;
+
+	gun->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+
+	if (InventoryWidget)
+	{
+		InventoryWidget->RefreshSubGunSlot(SubGun);
+	}
 }
 
 AGun* ASolaris::GetSubGun()

@@ -8,7 +8,7 @@
 
 #include "Item/Item.h"
 #include "UI/ItemWidget.h"
-#include "Item/Gun.h"
+#include "UI/GunSlot.h"
 
 UInventory::UInventory(const FObjectInitializer& ObjectInitializer) : UUserWidget(ObjectInitializer)
 {
@@ -82,9 +82,10 @@ void UInventory::AddInventory(AItem* item)
 
 void UInventory::RefreshMainGunSlot(AGun* gun)
 {
-	if (!gun) return;
+	MainGunSlot->RefreshGunSlot(gun);
+}
 
-	//GunImg
-	GunName->SetText(gun->itemName);
-	Ammo->SetText(FText::FromString(FString::FromInt(gun->GetLoadedAmmo())));
+void UInventory::RefreshSubGunSlot(AGun* gun)
+{
+	SubGunSlot->RefreshGunSlot(gun);
 }
