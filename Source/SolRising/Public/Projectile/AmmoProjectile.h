@@ -34,4 +34,8 @@ public:
 
 public:
 	class AActor* OwningCharacter;
+
+private:
+	float HeadshotDistance = 35.0f;
+	bool isHeadShot(FVector HitLocation, FVector SocketLocation);
 };

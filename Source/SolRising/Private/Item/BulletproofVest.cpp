@@ -33,9 +33,9 @@ void ABulletproofVest::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto bagType = FMath::RandRange(0, 2);
+	auto vestType = FMath::RandRange(0, 2);
 
-	switch (bagType)
+	switch (vestType)
 	{
 		case (uint8)(E_BulletproofVestType::EBVT_LV1) :
 

@@ -16,6 +16,7 @@
 #include "Item/Bag.h"
 #include "Item/BulletproofVest.h"
 #include "Item/Ammo.h"
+#include "Item/HealItem.h"
 #include "Architecture/Door.h"
 #include "UI/Inventory.h"
 
@@ -46,7 +47,7 @@ ASolaris::ASolaris()
 	PickItemRange = CreateDefaultSubobject<USphereComponent>(TEXT("PickItemRange"));
 	PickItemRange->SetupAttachment(RootComponent);
 
-	healthPoint = 100.f;
+	currentHP = 50.f;
 
 	ConstructorHelpers::FClassFinder<UUserWidget> InventoryBPClass(TEXT("/Game/Blueprints/UI/WBP_Inventory"));
 	if (InventoryBPClass.Class != nullptr)
@@ -258,6 +259,24 @@ void ASolaris::Pick(AItem* pickedItem)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("총알 획득 실패"));
 		}
+
+		return;
+	}
+
+	AHealItem* healItem = Cast<AHealItem>(pickedItem);
+	if(healItem)
+	{
+		if (healItem->healItemType == (uint8)(E_HelaItemType::EHT_FirstAidKit))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("구급상자 획득"));
+		}
+		else if (healItem->healItemType == (uint8)(E_HelaItemType::EHT_Bandage))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("붕대 획득"));
+		}
+
+		healItem->Destroy();
+		OverlappedItem.Remove(healItem);
 
 		return;
 	}
@@ -483,14 +502,47 @@ void ASolaris::RefreshInventory()
 
 }
 
-float ASolaris::GetHP()
+float ASolaris::GetCurrentVestDefence()
 {
-	return healthPoint;
+	return CurrentVestDefence;
 }
 
-void ASolaris::SetHP(float setHP)
+void ASolaris::TakeDamege(bool isHeadShot, float damage, float reduceDamage)
 {
-	healthPoint = setHP;
+	if (isHeadShot == true)
+	{
+		currentHP -= damage * 2;
+	}
+	else
+	{
+		currentHP -= damage * reduceDamage;
+	}
+}
+
+void ASolaris::HealHP(float AmountOfRecovery)
+{
+	if (currentHP + AmountOfRecovery > maxHP)
+	{
+		currentHP = maxHP;
+	}
+	else
+	{
+		currentHP += AmountOfRecovery;
+	}	
+}
+
+void ASolaris::UseItem(AItem* item)
+{
+	AHealItem* healItem = Cast<AHealItem>(item);
+	if (healItem)
+	{
+		HealHP(healItem->GetAmountOfRecovery());	
+	}
+}
+
+float ASolaris::GetHP()
+{
+	return currentHP;
 }
 
 float ASolaris::GetCurrentGunDamage()

@@ -138,11 +138,17 @@ public:
 	
 
 private:
-	float healthPoint;
+	float currentHP;
+	const float maxHP = 100.f;
 
 public:
 	float GetHP();
-	void SetHP(float setHP);
 
 	float GetCurrentGunDamage();
+	float GetCurrentVestDefence();
+
+	void TakeDamege(bool isHeadShot, float damage, float reduceDamage);
+	void HealHP(float AmountOfRecovery);
+
+	void UseItem(AItem* item);
 };
