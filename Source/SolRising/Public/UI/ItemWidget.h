@@ -35,4 +35,7 @@ public:
 	void PickItem();
 
 	class ASolaris* Owner;
+
+	UPROPERTY()
+	bool isPickable = true;
 };

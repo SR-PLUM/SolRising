@@ -85,7 +85,9 @@ public:
 	UFUNCTION()
 	void OnItemEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	void SetMainGun(AGun* gun);
 	AGun* GetMainGun();
+	void SetSubGun(AGun* gun);
 	AGun* GetSubGun();
 
 	void AttachMainGun();

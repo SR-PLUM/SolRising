@@ -22,6 +22,11 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UScrollBox* PickedItemList;
 
+	UPROPERTY(meta = (BindWidget))
+	class UGunSlot* MainGunSlot;
+	UPROPERTY(meta = (BindWidget))
+	class UGunSlot* SubGunSlot;
+
 	UPROPERTY()
 	TSubclassOf<class UUserWidget> ItemWidgetClass;
 
@@ -35,6 +40,14 @@ public:
 	void AddList(class AItem* item);
 	UFUNCTION()
 	void RemoveList(class AItem* item);
+
+	UFUNCTION()
+	void AddInventory(class AItem* item);
+
+	UFUNCTION()
+	void RefreshMainGunSlot(class AGun* gun);
+	UFUNCTION()
+	void RefreshSubGunSlot(class AGun* gun);
 
 	class ASolaris* Owner;
 };
