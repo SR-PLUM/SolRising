@@ -187,8 +187,13 @@ void ASolaris::Pick(AItem* pickedItem)
 					currentAmmoCount[GetMainGun()->GetAmmoType()] += GetMainGun()->GetLoadedAmmo();
 				}
 			}
+
+			MainGun->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+			UE_LOG(LogTemp, Warning, TEXT("메인건 버리기"));
 			
 			SetMainGun(gun);
+
+			MainGun->AttachMeshToSocket(GetMesh(), FName("RightHandIdleSocket"));
 		}
 
 		OverlappedItem.Remove(pickedItem);
@@ -234,9 +239,15 @@ void ASolaris::Pick(AItem* pickedItem)
 		if (CanPick(ammo->weight))
 		{
 			CurrentWeight += ammo->weight;
-			currentAmmoCount[ammo->ammoType_gen] += ammo->count;
+			//currentAmmoCount[ammo->ammoType_gen] += ammo->count;
 
-			UE_LOG(LogTemp, Warning, TEXT("총알 획득 현재 용량 : %f / %f"), CurrentWeight, MaxWeight);
+			if (havingItemsName.Find(ammo->itemName.ToString()) == INDEX_NONE)
+			{
+				havingItemsName.Add(ammo->itemName.ToString());
+				havingItemsCount.Add(0);
+			}
+
+			havingItemsCount[havingItemsName.Find(ammo->itemName.ToString())] += ammo->count;
 
 			ammo->Destroy();
 			OverlappedItem.Remove(ammo);
@@ -248,7 +259,7 @@ void ASolaris::Pick(AItem* pickedItem)
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("총알 획득 실패"));
+			PartialPick(ammo);
 		}
 
 		return;
@@ -257,17 +268,25 @@ void ASolaris::Pick(AItem* pickedItem)
 	AHealItem* healItem = Cast<AHealItem>(pickedItem);
 	if(healItem)
 	{
-		if (healItem->healItemType == (uint8)(E_HelaItemType::EHT_FirstAidKit))
+		if (CanPick(healItem->weight))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("구급상자 획득"));
-		}
-		else if (healItem->healItemType == (uint8)(E_HelaItemType::EHT_Bandage))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("붕대 획득"));
-		}
+			CurrentWeight += healItem->weight;
 
-		healItem->Destroy();
-		OverlappedItem.Remove(healItem);
+			if (havingItemsName.Find(healItem->itemName.ToString()) == INDEX_NONE)
+			{
+				havingItemsName.Add(healItem->itemName.ToString());
+				havingItemsCount.Add(0);
+			}
+
+			havingItemsCount[havingItemsName.Find(healItem->itemName.ToString())] += healItem->count;
+
+			healItem->Destroy();
+			OverlappedItem.Remove(healItem);
+		}
+		else
+		{
+			PartialPick(healItem);
+		}
 
 		return;
 	}
@@ -360,6 +379,47 @@ void ASolaris::OnItemBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 			InventoryWidget->AddList(item);
 		}
 	}
+}
+
+void ASolaris::PartialPick(AItem* item)
+{	
+	if (AGun* gun = Cast<AGun>(item))
+		return;
+
+	if (ABulletproofVest* vest = Cast<ABulletproofVest>(item))
+		return;
+
+	if (ABag* bag = Cast<ABag>(item))
+		return;
+
+	int32 canPickNumber = DecideCount(item);
+
+	if (canPickNumber > 0)
+	{
+		CurrentWeight += item->individualWeight * canPickNumber;
+
+		if (havingItemsName.Find(item->itemName.ToString()) == INDEX_NONE)
+		{
+			havingItemsName.Add(item->itemName.ToString());
+			havingItemsCount.Add(0);
+		}
+
+		havingItemsCount[havingItemsName.Find(item->itemName.ToString())] += canPickNumber;
+
+		item->count -= canPickNumber;
+		item->weight = item->individualWeight * item->count;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("획득 실패"));
+	}
+
+	return;
+}
+
+int32 ASolaris::DecideCount(AItem* item)
+{
+	return ((MaxWeight - CurrentWeight) / item->individualWeight);
 }
 
 void ASolaris::OnItemEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

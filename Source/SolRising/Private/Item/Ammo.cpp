@@ -39,18 +39,20 @@ void AAmmo::BeginPlay()
 {
 	Super::BeginPlay();
 
+	count = 20;
+
 	int32 ammoType = FMath::RandRange(0, 1);
 
 	switch (ammoType)
 	{
 	case (uint8)(E_AmmoType::EAT_5):
-
 		if (EAT_5Mesh)
 		{
 			AmmoMesh->SetStaticMesh(EAT_5Mesh);
 		}
-
+		individualWeight = 0.2;
 		weight = 0.2 * count;
+		itemName = FText::FromString("5.56mm Ammo");
 		break;
 	case (uint8)(E_AmmoType::EAT_7):
 
@@ -58,8 +60,9 @@ void AAmmo::BeginPlay()
 		{
 			AmmoMesh->SetStaticMesh(EAT_7Mesh);
 		}
-
-		weight = 0.4 * count;
+		individualWeight = 0.4;
+		weight = individualWeight * count;
+		itemName = FText::FromString("7.62mm Ammo");
 		break;
 	default:
 		break;

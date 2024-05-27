@@ -43,6 +43,5 @@ private:
 
 public:
 	int32 healItemType;
-	int32 count;
 	float GetAmountOfRecovery();
 };

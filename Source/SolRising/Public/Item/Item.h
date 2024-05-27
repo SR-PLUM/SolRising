@@ -29,7 +29,9 @@ private:
 
 public:
 	FText itemName;
+	float individualWeight;
 	float weight;
+	int32 count = 0;
 
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName);
 };

@@ -52,6 +52,10 @@ public:
 
 	UFUNCTION()
 	bool CanPick(float ItemWeight);
+	UFUNCTION()
+	int32 DecideCount(AItem* item);
+	UFUNCTION()
+	void PartialPick(AItem* item);
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -123,8 +127,12 @@ public:
 
 	UPROPERTY()
 	int32 currentAmmoCount[2];
+	//UPROPERTY()
+	//TArray<AItem*> havingItems;
 	UPROPERTY()
-	TArray<class AItem*> havingItems;
+	TArray<FString> havingItemsName;
+	UPROPERTY()
+	TArray<int32> havingItemsCount;
 
 	//Inventory
 	UPROPERTY()
