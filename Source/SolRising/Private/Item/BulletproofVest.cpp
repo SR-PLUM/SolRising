@@ -19,11 +19,11 @@ ABulletproofVest::ABulletproofVest()
 		SceneComponent->SetupAttachment(RootComponent);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_1_Bag"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_1_Vest"));
 	Lv1VestMesh = Mesh1.Object;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_2_Bag"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_2_Vest"));
 	Lv2VestMesh = Mesh2.Object;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_3_Bag"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_3_Vest"));
 	Lv3VestMesh = Mesh3.Object;
 
 	itemName = FText::FromString("BulletproofVest");
@@ -43,8 +43,6 @@ void ABulletproofVest::BeginPlay()
 			{
 				BulletproofVestMesh->SetStaticMesh(Lv1VestMesh);
 			}
-
-		BulletproofVestMesh->SetRelativeScale3D(FVector(3, 3, 3));
 		defense = 0.8;
 		break;
 		case (uint8)(E_BulletproofVestType::EBVT_LV2) :
@@ -53,8 +51,6 @@ void ABulletproofVest::BeginPlay()
 			{
 				BulletproofVestMesh->SetStaticMesh(Lv2VestMesh);
 			}
-
-		BulletproofVestMesh->SetRelativeScale3D(FVector(4, 4, 4));
 		defense = 0.7;
 		break;
 		case (uint8)(E_BulletproofVestType::EBVT_LV3) :
@@ -63,8 +59,6 @@ void ABulletproofVest::BeginPlay()
 			{
 				BulletproofVestMesh->SetStaticMesh(Lv3VestMesh);
 			}
-
-		BulletproofVestMesh->SetRelativeScale3D(FVector(5, 5, 5));
 		defense = 0.5;
 		break;
 		default:

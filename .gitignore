@@ -76,3 +76,9 @@ DerivedDataCache/*
 #BuildingAsset
 Content/CitySampleBuildings/*
 Content/ModularBuildingSet/*
+
+#UselessAsset
+Content/OldWest/VOL3/Meshes/*
+Content/OldWest/VOL3/Maps/*
+Content/OldWest/VOL3/BP/*
+Content/OldWest/Shared/*

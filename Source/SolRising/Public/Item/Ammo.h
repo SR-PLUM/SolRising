@@ -39,7 +39,6 @@ private:
 		class UStaticMesh* EAT_7Mesh;
 
 public:
-	int32 count = 20;
 	int32 ammoType_gen;
 
 public:

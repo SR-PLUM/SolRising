@@ -25,9 +25,9 @@ AHealItem::AHealItem()
 		SceneComponent->SetupAttachment(RootComponent);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/StaticMesh/SM_5_56mm_Mag"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh1(TEXT("/Game/Blueprints/Item/StaticMesh/SM_FirstAidKit"));
 	FirstAidKitMesh = Mesh1.Object;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_7_62mm_Mag"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Bandage"));
 	BandageMesh = Mesh2.Object;
 
 	itemName = FText::FromString("HealItem");
@@ -42,25 +42,29 @@ void AHealItem::BeginPlay()
 	switch (healItemType)
 	{
 		case (uint8)(E_HelaItemType::EHT_FirstAidKit) :
-
 			if (FirstAidKitMesh)
 			{
 				HealItemMesh->SetStaticMesh(FirstAidKitMesh);
 			}
-		count = 1;
-		amountOfRecovery = 100;
-		weight = 10 * count;
-		break;
-		case (uint8)(E_HelaItemType::EHT_Bandage) :
+			count = 1;
+			individualWeight = 10;
+			amountOfRecovery = 100;
+			weight = individualWeight * count;
+			itemName = FText::FromString("FirstAidKit");
+			break;
 
+		case (uint8)(E_HelaItemType::EHT_Bandage) :
 			if (BandageMesh)
 			{
 				HealItemMesh->SetStaticMesh(BandageMesh);
 			}
-		count = 5;
-		amountOfRecovery = 10;
-		weight = 2 * count;
-		break;
+			count = 5;
+			individualWeight = 2;
+			amountOfRecovery = 10;
+			weight = individualWeight * count;
+			itemName = FText::FromString("Bandage");
+			break;
+
 		default:
 			break;
 	}
