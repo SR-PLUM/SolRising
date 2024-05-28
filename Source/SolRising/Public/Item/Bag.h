@@ -45,4 +45,11 @@ private:
 		class UStaticMesh* Lv2BagMesh;
 	UPROPERTY(EditAnywhere)
 		class UStaticMesh* Lv3BagMesh;
+
+	UPROPERTY()
+	UTexture2D* Lv1BagImg;
+	UPROPERTY()
+	UTexture2D* Lv2BagImg;
+	UPROPERTY()
+	UTexture2D* Lv3BagImg;
 };

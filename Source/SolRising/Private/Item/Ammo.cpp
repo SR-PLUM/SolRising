@@ -32,6 +32,12 @@ AAmmo::AAmmo()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_7_62mm_Mag"));
 	EAT_7Mesh = Mesh2.Object;
 
+	FString Ammo_5Path("/Game/Blueprints/UI/Widget_Images/5_56mmAmmo");
+	FString Ammo_7Path("/Game/Blueprints/UI/Widget_Images/7_62mmAmmo");
+
+	Ammo_5Img = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *Ammo_5Path));
+	Ammo_7Img = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *Ammo_7Path));
+
 	itemName = FText::FromString("Ammo");
 }
 
@@ -52,6 +58,7 @@ void AAmmo::BeginPlay()
 		}
 		individualWeight = 0.2;
 		weight = 0.2 * count;
+		itemImg = Ammo_5Img;
 		itemName = FText::FromString("5.56mm Ammo");
 		break;
 	case (uint8)(E_AmmoType::EAT_7):
@@ -62,6 +69,7 @@ void AAmmo::BeginPlay()
 		}
 		individualWeight = 0.4;
 		weight = individualWeight * count;
+		itemImg = Ammo_7Img;
 		itemName = FText::FromString("7.62mm Ammo");
 		break;
 	default:

@@ -27,7 +27,15 @@ ABag::ABag()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_2_Bag"));
 	Lv2BagMesh = Mesh2.Object;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_3_Bag"));
-	Lv3BagMesh = Mesh3.Object;	
+	Lv3BagMesh = Mesh3.Object;
+
+	FString Lv1BagPath("/Game/Blueprints/UI/Widget_Images/LV1_Bag");
+	FString Lv2BagPath("/Game/Blueprints/UI/Widget_Images/LV2_Bag");
+	FString Lv3BagPath("/Game/Blueprints/UI/Widget_Images/LV3_Bag");
+
+	Lv1BagImg = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *Lv1BagPath));
+	Lv2BagImg = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *Lv2BagPath));
+	Lv3BagImg = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *Lv3BagPath));
 
 	itemName = FText::FromString("Bag");
 }
@@ -46,31 +54,46 @@ void ABag::BeginPlay()
 		if (Lv1BagMesh && BagMesh)
 		{
 			BagMesh->SetStaticMesh(Lv1BagMesh);
+			BagMesh->SetRelativeScale3D(FVector(3, 3, 3));
 		}
 
-		BagMesh->SetRelativeScale3D(FVector(3, 3, 3));
 		maxWeight = 50;
+
+		itemImg = Lv1BagImg;
+		itemName = FText::FromString("Lv1_Bag");
+
 		break;
+
 	case (uint8)(E_BagType::EBT_MediumBag):
 
 		if (Lv2BagMesh && BagMesh)
 		{
 			BagMesh->SetStaticMesh(Lv2BagMesh);
+			BagMesh->SetRelativeScale3D(FVector(4, 4, 4));
 		}
-
-		BagMesh->SetRelativeScale3D(FVector(4, 4, 4));
+		
 		maxWeight = 100;
+
+		itemImg = Lv2BagImg;
+		itemName = FText::FromString("Lv2_Bag");
+
 		break;
+
 	case (uint8)(E_BagType::EBT_LargeBag):
 		
 		if (Lv3BagMesh && BagMesh)
 		{
 			BagMesh->SetStaticMesh(Lv3BagMesh);
+			BagMesh->SetRelativeScale3D(FVector(5, 5, 5));
 		}
-
-		BagMesh->SetRelativeScale3D(FVector(5, 5, 5));
+		
 		maxWeight = 150;
+
+		itemImg = Lv3BagImg;
+		itemName = FText::FromString("Lv3_Bag");
+
 		break;
+
 	default:
 		break;
 	}
