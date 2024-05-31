@@ -5,6 +5,7 @@
 
 #include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 
 #include "Item/Item.h"
 #include "UI/ItemWidget.h"
@@ -45,6 +46,10 @@ void UInventory::AddList(AItem* item)
 
 		if(itemWidget->ItemText)
 			itemWidget->ItemText->SetText(item->itemName);
+		if (itemWidget->ItemImg)
+		{
+			itemWidget->ItemImg->SetBrushFromTexture(item->itemImg);
+		}
 
 		PickableItemList->AddChild(itemWidget);
 

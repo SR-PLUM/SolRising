@@ -40,6 +40,14 @@ AGun::AGun()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/Blueprints/Item/StaticMesh/SM_AK47"));
 	AK47Mesh = Mesh3.Object;
 
+	FString M416Path("/Game/Blueprints/UI/Widget_Images/M416");
+	FString AK74UPath("/Game/Blueprints/UI/Widget_Images/AK74U");
+	FString AK47Path("/Game/Blueprints/UI/Widget_Images/AK47");
+
+	M416Img = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *M416Path));
+	AK74UImg = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *AK74UPath));
+	AK47Img = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *AK47Path));
+
 	itemName = FText::FromString("Gun");
 }
 
@@ -70,6 +78,10 @@ void AGun::BeginPlay()
 		horizontalRecoil = M416HorizontalRecoil;
 		FireSound = M416FireSound;
 		FireAnimation = M416FireAnimation;
+
+		itemImg = M416Img;
+		itemName = FText::FromString("M416");
+
 		break;
 	case (uint8)(E_GunName::EGN_AK74U):
 
@@ -89,6 +101,10 @@ void AGun::BeginPlay()
 		horizontalRecoil = AK74UHorizontalRecoil;
 		FireSound = AK74UFireSound;
 		FireAnimation = AK74UFireAnimation;
+
+		itemImg = AK74UImg;
+		itemName = FText::FromString("AK74U");
+
 		break;
 	case (uint8)(E_GunName::EGN_AK47):
 
@@ -108,6 +124,10 @@ void AGun::BeginPlay()
 		horizontalRecoil = AK47HorizontalRecoil;
 		FireSound = AK47FireSound;
 		FireAnimation = AK47FireAnimation;
+
+		itemImg = AK47Img;
+		itemName = FText::FromString("AK47");
+
 		break;
 	default:
 		break;

@@ -38,6 +38,11 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UStaticMesh* BandageMesh;
 
+	UPROPERTY()
+	UTexture2D* FirstAidKitImg;
+	UPROPERTY()
+	UTexture2D* BandageImg;
+
 private:
 	float amountOfRecovery;
 
