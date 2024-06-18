@@ -7,7 +7,7 @@
 #include "HealItem.generated.h"
 
 UENUM(BlueprintType)
-enum class E_HelaItemType : uint8
+enum class E_HealItemType : uint8
 {
 	EHT_FirstAidKit UMETA(DisplayName = "FirstAidKit"),
 	EHT_Bandage UMETA(DisplayName = "Bandage"),
@@ -38,8 +38,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UStaticMesh* BandageMesh;
 
-private:
-	float amountOfRecovery;
+public:
+	static const int32 bandageRecovery = 10;
+	static const int32 firstAidKitRecovery = 100;
 
 public:
 	int32 healItemType;

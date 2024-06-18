@@ -39,7 +39,7 @@ private:
 		class UStaticMesh* EAT_7Mesh;
 
 public:
-	int32 ammoType_gen;
+	int32 ammoType;
 
 public:
 	void ChangeAmmoType(E_AmmoType EAT);

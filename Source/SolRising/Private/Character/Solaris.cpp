@@ -226,7 +226,7 @@ void ASolaris::Pick(AItem* pickedItem)
 
 		UE_LOG(LogTemp, Warning, TEXT("조끼 방어력 : %f"), vest->GetDefence());
 
-		vest->Destroy();
+		vest->Destroy();					//Destroy 하지 않기
 		OverlappedItem.Remove(vest);
 
 		return;
@@ -239,23 +239,33 @@ void ASolaris::Pick(AItem* pickedItem)
 		if (CanPick(ammo->weight))
 		{
 			CurrentWeight += ammo->weight;
-			//currentAmmoCount[ammo->ammoType_gen] += ammo->count;
+			bool hasItem = false;
 
-			if (havingItemsName.Find(ammo->itemName.ToString()) == INDEX_NONE)
+			for (auto item : havingItems)
 			{
-				havingItemsName.Add(ammo->itemName.ToString());
-				havingItemsCount.Add(0);
+				if (item.itemType == E_ItemType::EIT_Ammo)
+				{
+					if (item.subType == ammo->ammoType)
+					{
+						item.count += ammo->count;
+						hasItem = true;
+						break;
+					}
+				}
 			}
 
-			havingItemsCount[havingItemsName.Find(ammo->itemName.ToString())] += ammo->count;
+			if (hasItem == false)
+			{
+				FItemInfo tmpItem;
+				tmpItem.count = pickedItem->count;
+				tmpItem.individualWeight = pickedItem->individualWeight;
+				tmpItem.itemType = E_ItemType::EIT_Ammo;
+				tmpItem.subType = ammo->ammoType;
+				havingItems.Add(tmpItem);
+			}
 
 			ammo->Destroy();
 			OverlappedItem.Remove(ammo);
-
-			if (InventoryWidget)
-			{
-				InventoryWidget->AddInventory(ammo);
-			}
 		}
 		else
 		{
@@ -272,13 +282,30 @@ void ASolaris::Pick(AItem* pickedItem)
 		{
 			CurrentWeight += healItem->weight;
 
-			if (havingItemsName.Find(healItem->itemName.ToString()) == INDEX_NONE)
+			bool hasItem = false;
+
+			for (auto item : havingItems)
 			{
-				havingItemsName.Add(healItem->itemName.ToString());
-				havingItemsCount.Add(0);
+				if (item.itemType == E_ItemType::EIT_HealItem)
+				{
+					if (item.subType == healItem->healItemType)
+					{
+						item.count += healItem->count;
+						hasItem = true;
+						break;
+					}
+				}
 			}
 
-			havingItemsCount[havingItemsName.Find(healItem->itemName.ToString())] += healItem->count;
+			if (hasItem == false)
+			{
+				FItemInfo tmpItem;
+				tmpItem.count = pickedItem->count;
+				tmpItem.individualWeight = pickedItem->individualWeight;
+				tmpItem.itemType = E_ItemType::EIT_HealItem;
+				tmpItem.subType = healItem->healItemType;
+				havingItems.Add(tmpItem);
+			}
 
 			healItem->Destroy();
 			OverlappedItem.Remove(healItem);
@@ -398,13 +425,63 @@ void ASolaris::PartialPick(AItem* item)
 	{
 		CurrentWeight += item->individualWeight * canPickNumber;
 
-		if (havingItemsName.Find(item->itemName.ToString()) == INDEX_NONE)
+		AHealItem* healItem = Cast<AHealItem>(item);
+		if (healItem)
 		{
-			havingItemsName.Add(item->itemName.ToString());
-			havingItemsCount.Add(0);
+			bool hasItem = false;
+
+			for (auto havingItem : havingItems)
+			{
+				if (havingItem.itemType == E_ItemType::EIT_HealItem)
+				{
+					if (havingItem.subType == healItem->healItemType)
+					{
+						havingItem.count += canPickNumber;
+						hasItem = true;
+						break;
+					}
+				}
+			}
+
+			if (hasItem == false)
+			{
+				FItemInfo tmpItem;
+				tmpItem.count = canPickNumber;
+				tmpItem.individualWeight = item->individualWeight;
+				tmpItem.itemType = E_ItemType::EIT_HealItem;
+				tmpItem.subType = healItem->healItemType;
+				havingItems.Add(tmpItem);
+			}
 		}
 
-		havingItemsCount[havingItemsName.Find(item->itemName.ToString())] += canPickNumber;
+		AAmmo* ammo = Cast<AAmmo>(item);
+		if (ammo)
+		{
+			bool hasItem = false;
+
+			for (auto havingItem : havingItems)
+			{
+				if (havingItem.itemType == E_ItemType::EIT_Ammo)
+				{
+					if (havingItem.subType == ammo->ammoType)
+					{
+						havingItem.count += canPickNumber;
+						hasItem = true;
+						break;
+					}
+				}
+			}
+
+			if (hasItem == false)
+			{
+				FItemInfo tmpItem;
+				tmpItem.count = canPickNumber;
+				tmpItem.individualWeight = item->individualWeight;
+				tmpItem.itemType = E_ItemType::EIT_Ammo;
+				tmpItem.subType = ammo->ammoType;
+				havingItems.Add(tmpItem);
+			}
+		}
 
 		item->count -= canPickNumber;
 		item->weight = item->individualWeight * item->count;
@@ -609,12 +686,21 @@ void ASolaris::HealHP(float AmountOfRecovery)
 	}	
 }
 
-void ASolaris::UseItem(AItem* item)
+void ASolaris::UseItem(FItemInfo itemInfo)
 {
-	AHealItem* healItem = Cast<AHealItem>(item);
-	if (healItem)
+	if (itemInfo.itemType == E_ItemType::EIT_HealItem)
 	{
-		HealHP(healItem->GetAmountOfRecovery());	
+		if (itemInfo.subType == (int)E_HealItemType::EHT_FirstAidKit)
+		{
+			HealHP(AHealItem::firstAidKitRecovery);
+		}
+		else if (itemInfo.subType == (int)E_HealItemType::EHT_Bandage)
+		{
+			HealHP(AHealItem::bandageRecovery);
+		}
+
+		itemInfo.count -= 1;
+		CurrentWeight -= itemInfo.individualWeight;
 	}
 }
 

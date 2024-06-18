@@ -41,26 +41,24 @@ void AHealItem::BeginPlay()
 
 	switch (healItemType)
 	{
-		case (uint8)(E_HelaItemType::EHT_FirstAidKit) :
+		case (uint8)(E_HealItemType::EHT_FirstAidKit) :
 			if (FirstAidKitMesh)
 			{
 				HealItemMesh->SetStaticMesh(FirstAidKitMesh);
 			}
 			count = 1;
 			individualWeight = 10;
-			amountOfRecovery = 100;
 			weight = individualWeight * count;
 			itemName = FText::FromString("FirstAidKit");
 			break;
 
-		case (uint8)(E_HelaItemType::EHT_Bandage) :
+		case (uint8)(E_HealItemType::EHT_Bandage) :
 			if (BandageMesh)
 			{
 				HealItemMesh->SetStaticMesh(BandageMesh);
 			}
 			count = 5;
 			individualWeight = 2;
-			amountOfRecovery = 10;
 			weight = individualWeight * count;
 			itemName = FText::FromString("Bandage");
 			break;

@@ -41,7 +41,7 @@ void AAmmo::BeginPlay()
 
 	count = 20;
 
-	int32 ammoType = FMath::RandRange(0, 1);
+	ammoType = FMath::RandRange(0, 1);
 
 	switch (ammoType)
 	{

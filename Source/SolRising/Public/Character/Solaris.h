@@ -14,6 +14,29 @@ enum class E_GroundPose : uint8
 	EGP_Prone UMETA(DisplayName = "Prone"),
 };
 
+UENUM(BlueprintType)
+enum class E_ItemType : uint8
+{
+	EIT_Ammo UMETA(DisplayName = "Ammo"),
+	EIT_HealItem UMETA(DisplayName = "HealItem"),
+};
+
+USTRUCT(BlueprintType)
+struct FItemInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	E_ItemType itemType;
+
+	UPROPERTY()
+	int32 subType;
+	UPROPERTY()
+	int32 count;
+	UPROPERTY()
+	float individualWeight;
+};
+
 UCLASS()
 class SOLRISING_API ASolaris : public ACharacter
 {
@@ -127,12 +150,8 @@ public:
 
 	UPROPERTY()
 	int32 currentAmmoCount[2];
-	//UPROPERTY()
-	//TArray<AItem*> havingItems;
 	UPROPERTY()
-	TArray<FString> havingItemsName;
-	UPROPERTY()
-	TArray<int32> havingItemsCount;
+	TArray<FItemInfo> havingItems;
 
 	//Inventory
 	UPROPERTY()
@@ -160,5 +179,5 @@ public:
 	void TakeDamege(bool isHeadShot, float damage, float reduceDamage);
 	void HealHP(float AmountOfRecovery);
 
-	void UseItem(AItem* item);
+	void UseItem(FItemInfo itemInfo);
 };
