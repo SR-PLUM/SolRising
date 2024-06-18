@@ -42,7 +42,7 @@ public:
 	void RemoveList(class AItem* item);
 
 	UFUNCTION()
-	void AddInventory(class AItem* item);
+	void AddInventory(FItemData itemData);
 
 	UFUNCTION()
 	void RefreshMainGunSlot(class AGun* gun);

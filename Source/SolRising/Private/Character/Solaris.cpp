@@ -19,6 +19,7 @@
 #include "Item/HealItem.h"
 #include "Architecture/Door.h"
 #include "UI/Inventory.h"
+#include "Struct/ItemData.h"
 
 ASolaris::ASolaris()
 {
@@ -256,12 +257,18 @@ void ASolaris::Pick(AItem* pickedItem)
 
 			if (hasItem == false)
 			{
-				FItemInfo tmpItem;
+				FItemData tmpItem;
 				tmpItem.count = pickedItem->count;
 				tmpItem.individualWeight = pickedItem->individualWeight;
 				tmpItem.itemType = E_ItemType::EIT_Ammo;
 				tmpItem.subType = ammo->ammoType;
+				tmpItem.itemName = ammo->itemName;
 				havingItems.Add(tmpItem);
+
+				if (InventoryWidget)
+				{
+					InventoryWidget->AddInventory(tmpItem);
+				}
 			}
 
 			ammo->Destroy();
@@ -299,12 +306,18 @@ void ASolaris::Pick(AItem* pickedItem)
 
 			if (hasItem == false)
 			{
-				FItemInfo tmpItem;
+				FItemData tmpItem;
 				tmpItem.count = pickedItem->count;
 				tmpItem.individualWeight = pickedItem->individualWeight;
 				tmpItem.itemType = E_ItemType::EIT_HealItem;
 				tmpItem.subType = healItem->healItemType;
+				tmpItem.itemName = healItem->itemName;
 				havingItems.Add(tmpItem);
+
+				if (InventoryWidget)
+				{
+					InventoryWidget->AddInventory(tmpItem);
+				}
 			}
 
 			healItem->Destroy();
@@ -445,12 +458,18 @@ void ASolaris::PartialPick(AItem* item)
 
 			if (hasItem == false)
 			{
-				FItemInfo tmpItem;
+				FItemData tmpItem;
 				tmpItem.count = canPickNumber;
 				tmpItem.individualWeight = item->individualWeight;
 				tmpItem.itemType = E_ItemType::EIT_HealItem;
 				tmpItem.subType = healItem->healItemType;
+				tmpItem.itemName = healItem->itemName;
 				havingItems.Add(tmpItem);
+
+				if (InventoryWidget)
+				{
+					InventoryWidget->AddInventory(tmpItem);
+				}
 			}
 		}
 
@@ -474,12 +493,18 @@ void ASolaris::PartialPick(AItem* item)
 
 			if (hasItem == false)
 			{
-				FItemInfo tmpItem;
+				FItemData tmpItem;
 				tmpItem.count = canPickNumber;
 				tmpItem.individualWeight = item->individualWeight;
 				tmpItem.itemType = E_ItemType::EIT_Ammo;
 				tmpItem.subType = ammo->ammoType;
+				tmpItem.itemName = ammo->itemName;
 				havingItems.Add(tmpItem);
+
+				if (InventoryWidget)
+				{
+					InventoryWidget->AddInventory(tmpItem);
+				}
 			}
 		}
 
@@ -686,21 +711,21 @@ void ASolaris::HealHP(float AmountOfRecovery)
 	}	
 }
 
-void ASolaris::UseItem(FItemInfo itemInfo)
+void ASolaris::UseItem(FItemData itemData)
 {
-	if (itemInfo.itemType == E_ItemType::EIT_HealItem)
+	if (itemData.itemType == E_ItemType::EIT_HealItem)
 	{
-		if (itemInfo.subType == (int)E_HealItemType::EHT_FirstAidKit)
+		if (itemData.subType == (int)E_HealItemType::EHT_FirstAidKit)
 		{
 			HealHP(AHealItem::firstAidKitRecovery);
 		}
-		else if (itemInfo.subType == (int)E_HealItemType::EHT_Bandage)
+		else if (itemData.subType == (int)E_HealItemType::EHT_Bandage)
 		{
 			HealHP(AHealItem::bandageRecovery);
 		}
 
-		itemInfo.count -= 1;
-		CurrentWeight -= itemInfo.individualWeight;
+		itemData.count -= 1;
+		CurrentWeight -= itemData.individualWeight;
 	}
 }
 

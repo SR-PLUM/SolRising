@@ -75,8 +75,3 @@ void AHealItem::BeginPlay()
 void AHealItem::Tick(float DeltaTime)
 {
 }
-
-float AHealItem::GetAmountOfRecovery()
-{
-	return amountOfRecovery;
-}

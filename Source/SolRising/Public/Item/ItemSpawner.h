@@ -7,11 +7,11 @@
 #include "ItemSpawner.generated.h"
 
 UENUM(BlueprintType)
-enum class E_ItemType : uint8
+enum class E_SpawnItemType : uint8
 {
-	EIT_Ammo UMETA(DisplayName = "Ammo"),
-	EIT_Bag UMETA(DisplayName = "Bag"),
-	EIT_Gun UMETA(DisplayName = "Gun"),
+	ESIT_Ammo UMETA(DisplayName = "Ammo"),
+	ESIT_Bag UMETA(DisplayName = "Bag"),
+	ESIT_Gun UMETA(DisplayName = "Gun"),
 };
 
 UCLASS()

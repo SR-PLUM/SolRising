@@ -10,6 +10,7 @@
 #include "Item/Item.h"
 #include "UI/ItemWidget.h"
 #include "UI/GunSlot.h"
+#include "Struct/ItemData.h"
 
 UInventory::UInventory(const FObjectInitializer& ObjectInitializer) : UUserWidget(ObjectInitializer)
 {
@@ -69,17 +70,18 @@ void UInventory::RemoveList(AItem* item)
 	}
 }
 
-void UInventory::AddInventory(AItem* item)
+void UInventory::AddInventory(FItemData itemData)
 {
 	UItemWidget* itemWidget = CreateWidget<UItemWidget>(this, ItemWidgetClass);
 	if (itemWidget && PickedItemList)
 	{
-		itemWidget->Item = item;
-		itemWidget->Owner = Owner;
 		itemWidget->isPickable = false;
 
 		if (itemWidget->ItemText)
-			itemWidget->ItemText->SetText(item->itemName);
+			itemWidget->ItemText->SetText(itemData.itemName);
+
+		if (itemWidget->ItemCntText)
+			itemWidget->ItemCntText->SetText(FText::FromString(FString::FromInt(itemData.count)));
 
 		PickedItemList->AddChild(itemWidget);
 	}

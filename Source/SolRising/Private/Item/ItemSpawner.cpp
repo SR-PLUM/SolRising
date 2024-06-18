@@ -38,13 +38,13 @@ void AItemSpawner::BeginPlay()
 
 	switch (ItemType)
 	{
-	case (uint8)E_ItemType::EIT_Ammo:
+	case (uint8)E_SpawnItemType::ESIT_Ammo:
 		SpawnAmmo(GetActorLocation());
 		break;
-	case (uint8)E_ItemType::EIT_Bag:
+	case (uint8)E_SpawnItemType::ESIT_Bag:
 		SpawnBag();
 		break;
-	case (uint8)E_ItemType::EIT_Gun:
+	case (uint8)E_SpawnItemType::ESIT_Gun:
 		SpawnGun();
 		break;
 	default:
