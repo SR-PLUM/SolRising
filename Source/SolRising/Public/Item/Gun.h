@@ -51,6 +51,13 @@ private:
 	UPROPERTY(EditAnywhere)
 		class UStaticMesh* AK47Mesh;
 
+	UPROPERTY()
+	UTexture2D* M416Img;
+	UPROPERTY()
+	UTexture2D* AK74UImg;
+	UPROPERTY()
+	UTexture2D* AK47Img;
+
 public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AAmmoProjectile> AmmoProjectileActor;

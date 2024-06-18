@@ -32,6 +32,7 @@ public:
 	float individualWeight;
 	float weight;
 	int32 count = 0;
+	UTexture2D* itemImg;
 
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& SocketName);
 };

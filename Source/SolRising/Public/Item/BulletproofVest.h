@@ -46,4 +46,11 @@ private:
 	class UStaticMesh* Lv2VestMesh;
 	UPROPERTY(EditAnywhere)
 	class UStaticMesh* Lv3VestMesh;
+
+	UPROPERTY()
+	UTexture2D* Lv1VestImg;
+	UPROPERTY()
+	UTexture2D* Lv2VestImg;
+	UPROPERTY()
+	UTexture2D* Lv3VestImg;
 };

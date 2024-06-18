@@ -26,6 +26,14 @@ ABulletproofVest::ABulletproofVest()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh3(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Level_3_Vest"));
 	Lv3VestMesh = Mesh3.Object;
 
+	FString Lv1VestPath("/Game/Blueprints/UI/Widget_Images/LV1_Vest");
+	FString Lv2VestPath("/Game/Blueprints/UI/Widget_Images/LV2_Vest");
+	FString Lv3VestPath("/Game/Blueprints/UI/Widget_Images/LV3_Vest");
+
+	Lv1VestImg = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *Lv1VestPath));
+	Lv2VestImg = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *Lv2VestPath));
+	Lv3VestImg = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *Lv3VestPath));
+
 	itemName = FText::FromString("BulletproofVest");
 }
 
@@ -44,6 +52,10 @@ void ABulletproofVest::BeginPlay()
 				BulletproofVestMesh->SetStaticMesh(Lv1VestMesh);
 			}
 		defense = 0.8;
+
+		itemImg = Lv1VestImg;
+		itemName = FText::FromString("Lv1_Vest");
+
 		break;
 		case (uint8)(E_BulletproofVestType::EBVT_LV2) :
 
@@ -52,6 +64,10 @@ void ABulletproofVest::BeginPlay()
 				BulletproofVestMesh->SetStaticMesh(Lv2VestMesh);
 			}
 		defense = 0.7;
+
+		itemImg = Lv2VestImg;
+		itemName = FText::FromString("Lv2_Vest");
+
 		break;
 		case (uint8)(E_BulletproofVestType::EBVT_LV3) :
 
@@ -60,6 +76,10 @@ void ABulletproofVest::BeginPlay()
 				BulletproofVestMesh->SetStaticMesh(Lv3VestMesh);
 			}
 		defense = 0.5;
+
+		itemImg = Lv3VestImg;
+		itemName = FText::FromString("Lv3_Vest");
+
 		break;
 		default:
 			break;

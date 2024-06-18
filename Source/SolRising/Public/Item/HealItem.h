@@ -38,6 +38,11 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UStaticMesh* BandageMesh;
 
+	UPROPERTY()
+	UTexture2D* FirstAidKitImg;
+	UPROPERTY()
+	UTexture2D* BandageImg;
+	
 public:
 	static const int32 bandageRecovery = 10;
 	static const int32 firstAidKitRecovery = 100;

@@ -11,12 +11,6 @@ AHealItem::AHealItem()
 	{
 		HealItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HealItemMesh"));
 
-		/*static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("AmmoMeshPath"));
-		if (Mesh.Succeeded())
-		{
-			HealItemMesh->SetStaticMesh(Mesh.Object);
-		}*/
-
 		RootComponent = HealItemMesh;
 	}
 	if (!RootComponent)
@@ -29,6 +23,12 @@ AHealItem::AHealItem()
 	FirstAidKitMesh = Mesh1.Object;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh2(TEXT("/Game/Blueprints/Item/StaticMesh/SM_Bandage"));
 	BandageMesh = Mesh2.Object;
+
+	FString FirstAidKitPath("/Game/Blueprints/UI/Widget_Images/FirstAidKit");
+	FString BandagePath("/Game/Blueprints/UI/Widget_Images/Bandage");
+
+	FirstAidKitImg = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *FirstAidKitPath));
+	BandageImg = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *BandagePath));
 
 	itemName = FText::FromString("HealItem");
 }
@@ -49,6 +49,8 @@ void AHealItem::BeginPlay()
 			count = 1;
 			individualWeight = 10;
 			weight = individualWeight * count;
+
+			itemImg = FirstAidKitImg;
 			itemName = FText::FromString("FirstAidKit");
 			break;
 
@@ -60,6 +62,8 @@ void AHealItem::BeginPlay()
 			count = 5;
 			individualWeight = 2;
 			weight = individualWeight * count;
+
+			itemImg = BandageImg;
 			itemName = FText::FromString("Bandage");
 			break;
 

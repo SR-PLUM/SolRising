@@ -38,6 +38,11 @@ private:
 	UPROPERTY(EditAnywhere)
 		class UStaticMesh* EAT_7Mesh;
 
+	UPROPERTY()
+	UTexture2D* Ammo_5Img;
+	UPROPERTY()
+	UTexture2D* Ammo_7Img;
+
 public:
 	int32 ammoType;
 
