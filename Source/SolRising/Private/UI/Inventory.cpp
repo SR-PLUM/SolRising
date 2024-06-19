@@ -70,7 +70,7 @@ void UInventory::RemoveList(AItem* item)
 	}
 }
 
-void UInventory::AddInventory(FItemData itemData)
+void UInventory::AddInventory(FItemData itemData, UTexture2D* itemImg)
 {
 	UItemWidget* itemWidget = CreateWidget<UItemWidget>(this, ItemWidgetClass);
 	if (itemWidget && PickedItemList)
@@ -79,8 +79,8 @@ void UInventory::AddInventory(FItemData itemData)
 
 		if (itemWidget->ItemText)
 			itemWidget->ItemText->SetText(itemData.itemName);
-		//if (itemWidget->ItemImg)
-		//	itemWidget->ItemImg->SetBrushFromTexture(->itemImg);
+		if (itemWidget->ItemImg)
+			itemWidget->ItemImg->SetBrushFromTexture(itemImg);
 		if (itemWidget->ItemCntText)
 			itemWidget->ItemCntText->SetText(FText::FromString(FString::FromInt(itemData.count)));
 

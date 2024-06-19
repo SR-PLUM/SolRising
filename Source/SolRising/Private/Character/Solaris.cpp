@@ -273,7 +273,7 @@ void ASolaris::Pick(AItem* pickedItem)
 
 				if (InventoryWidget)
 				{
-					InventoryWidget->AddInventory(tmpItem);
+					InventoryWidget->AddInventory(tmpItem, ammo->itemImg);
 				}
 			}
 
@@ -328,7 +328,7 @@ void ASolaris::Pick(AItem* pickedItem)
 
 				if (InventoryWidget)
 				{
-					InventoryWidget->AddInventory(tmpItem);
+					InventoryWidget->AddInventory(tmpItem, healItem->itemImg);
 				}
 			}
 
@@ -486,7 +486,7 @@ void ASolaris::PartialPick(AItem* item)
 
 				if (InventoryWidget)
 				{
-					InventoryWidget->AddInventory(tmpItem);
+					InventoryWidget->AddInventory(tmpItem, item->itemImg);
 				}
 			}
 		}
@@ -527,7 +527,7 @@ void ASolaris::PartialPick(AItem* item)
 
 				if (InventoryWidget)
 				{
-					InventoryWidget->AddInventory(tmpItem);
+					InventoryWidget->AddInventory(tmpItem, item->itemImg);
 				}
 			}
 		}

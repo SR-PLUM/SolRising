@@ -43,7 +43,7 @@ public:
 	void RemoveList(class AItem* item);
 
 	UFUNCTION()
-	void AddInventory(FItemData itemData);
+	void AddInventory(FItemData itemData, UTexture2D* itemImg);
 
 	UFUNCTION()
 	void RefreshMainGunSlot(class AGun* gun);
