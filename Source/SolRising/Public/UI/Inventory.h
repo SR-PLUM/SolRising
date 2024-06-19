@@ -51,7 +51,9 @@ public:
 	void RefreshSubGunSlot(class AGun* gun);
 
 	UFUNCTION()
-	void AddCount(const FString& itemName, int32 cnt);
+	void RefreshHavingItemCount(const FString& itemName, int32 cnt);
+	UFUNCTION()
+	void RefreshPickableItemCount(AItem* Item, int32 cnt);
 
 	class ASolaris* Owner;
 };

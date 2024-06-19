@@ -253,7 +253,7 @@ void ASolaris::Pick(AItem* pickedItem)
 
 						if (InventoryWidget)
 						{
-							InventoryWidget->AddCount(item.itemName.ToString(), item.count);
+							InventoryWidget->RefreshHavingItemCount(item.itemName.ToString(), item.count);
 						}
 
 						break;
@@ -308,7 +308,7 @@ void ASolaris::Pick(AItem* pickedItem)
 
 						if (InventoryWidget)
 						{
-							InventoryWidget->AddCount(item.itemName.ToString(), item.count);
+							InventoryWidget->RefreshHavingItemCount(item.itemName.ToString(), item.count);
 						}
 
 						break;
@@ -466,7 +466,7 @@ void ASolaris::PartialPick(AItem* item)
 
 						if (InventoryWidget)
 						{
-							InventoryWidget->AddCount(havingItem.itemName.ToString(), havingItem.count);
+							InventoryWidget->RefreshHavingItemCount(havingItem.itemName.ToString(), havingItem.count);
 						}
 
 						break;
@@ -507,7 +507,7 @@ void ASolaris::PartialPick(AItem* item)
 
 						if (InventoryWidget)
 						{
-							InventoryWidget->AddCount(havingItem.itemName.ToString(), havingItem.count);
+							InventoryWidget->RefreshHavingItemCount(havingItem.itemName.ToString(), havingItem.count);
 						}
 
 						break;
@@ -534,6 +534,10 @@ void ASolaris::PartialPick(AItem* item)
 
 		item->count -= canPickNumber;
 		item->weight = item->individualWeight * item->count;
+		if (InventoryWidget)
+		{
+			InventoryWidget->RefreshPickableItemCount(item, item->count);
+		}
 	}
 	else
 	{

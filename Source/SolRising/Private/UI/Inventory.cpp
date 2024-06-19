@@ -99,7 +99,16 @@ void UInventory::RefreshSubGunSlot(AGun* gun)
 	SubGunSlot->RefreshGunSlot(gun);
 }
 
-void UInventory::AddCount(const FString& itemName, int32 cnt)
+void UInventory::RefreshPickableItemCount(AItem* Item, int32 cnt)
+{
+	auto updateItem = ItemList.FindRef(Item);
+	if (updateItem)
+	{
+		updateItem->ItemCntText->SetText(FText::FromString(FString::FromInt(cnt)));
+	}
+}
+
+void UInventory::RefreshHavingItemCount(const FString& itemName, int32 cnt)
 {
 	auto updateItem = HavingItemList.FindRef(itemName);
 	if (updateItem)
