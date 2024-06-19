@@ -31,6 +31,7 @@ private:
 	TSubclassOf<class UUserWidget> ItemWidgetClass;
 
 	TMap<class AItem*, class UItemWidget*> ItemList;
+	TMap<FString, UItemWidget*> HavingItemList;
 
 public:
 	UFUNCTION()
@@ -48,6 +49,9 @@ public:
 	void RefreshMainGunSlot(class AGun* gun);
 	UFUNCTION()
 	void RefreshSubGunSlot(class AGun* gun);
+
+	UFUNCTION()
+	void AddCount(const FString& itemName, int32 cnt);
 
 	class ASolaris* Owner;
 };

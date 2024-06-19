@@ -48,9 +48,9 @@ void UInventory::AddList(AItem* item)
 		if(itemWidget->ItemText)
 			itemWidget->ItemText->SetText(item->itemName);
 		if (itemWidget->ItemImg)
-		{
 			itemWidget->ItemImg->SetBrushFromTexture(item->itemImg);
-		}
+		if (itemWidget->ItemCntText)
+			itemWidget->ItemCntText->SetText(FText::FromString(FString::FromInt(item->count)));
 
 		PickableItemList->AddChild(itemWidget);
 
@@ -79,11 +79,13 @@ void UInventory::AddInventory(FItemData itemData)
 
 		if (itemWidget->ItemText)
 			itemWidget->ItemText->SetText(itemData.itemName);
-
+		//if (itemWidget->ItemImg)
+		//	itemWidget->ItemImg->SetBrushFromTexture(->itemImg);
 		if (itemWidget->ItemCntText)
 			itemWidget->ItemCntText->SetText(FText::FromString(FString::FromInt(itemData.count)));
 
 		PickedItemList->AddChild(itemWidget);
+		HavingItemList.Add(itemData.itemName.ToString(),itemWidget);
 	}
 }
 
@@ -95,4 +97,13 @@ void UInventory::RefreshMainGunSlot(AGun* gun)
 void UInventory::RefreshSubGunSlot(AGun* gun)
 {
 	SubGunSlot->RefreshGunSlot(gun);
+}
+
+void UInventory::AddCount(const FString& itemName, int32 cnt)
+{
+	auto updateItem = HavingItemList.FindRef(itemName);
+	if (updateItem)
+	{
+		updateItem->ItemCntText->SetText(FText::FromString(FString::FromInt(cnt)));
+	}
 }

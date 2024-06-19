@@ -242,7 +242,7 @@ void ASolaris::Pick(AItem* pickedItem)
 			CurrentWeight += ammo->weight;
 			bool hasItem = false;
 
-			for (auto item : havingItems)
+			for (auto& item : havingItems)
 			{
 				if (item.itemType == E_ItemType::EIT_Ammo)
 				{
@@ -250,6 +250,12 @@ void ASolaris::Pick(AItem* pickedItem)
 					{
 						item.count += ammo->count;
 						hasItem = true;
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->AddCount(item.itemName.ToString(), item.count);
+						}
+
 						break;
 					}
 				}
@@ -291,7 +297,7 @@ void ASolaris::Pick(AItem* pickedItem)
 
 			bool hasItem = false;
 
-			for (auto item : havingItems)
+			for (auto& item : havingItems)
 			{
 				if (item.itemType == E_ItemType::EIT_HealItem)
 				{
@@ -299,6 +305,12 @@ void ASolaris::Pick(AItem* pickedItem)
 					{
 						item.count += healItem->count;
 						hasItem = true;
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->AddCount(item.itemName.ToString(), item.count);
+						}
+
 						break;
 					}
 				}
@@ -443,7 +455,7 @@ void ASolaris::PartialPick(AItem* item)
 		{
 			bool hasItem = false;
 
-			for (auto havingItem : havingItems)
+			for (auto& havingItem : havingItems)
 			{
 				if (havingItem.itemType == E_ItemType::EIT_HealItem)
 				{
@@ -451,6 +463,12 @@ void ASolaris::PartialPick(AItem* item)
 					{
 						havingItem.count += canPickNumber;
 						hasItem = true;
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->AddCount(havingItem.itemName.ToString(), havingItem.count);
+						}
+
 						break;
 					}
 				}
@@ -478,7 +496,7 @@ void ASolaris::PartialPick(AItem* item)
 		{
 			bool hasItem = false;
 
-			for (auto havingItem : havingItems)
+			for (auto& havingItem : havingItems)
 			{
 				if (havingItem.itemType == E_ItemType::EIT_Ammo)
 				{
@@ -486,6 +504,12 @@ void ASolaris::PartialPick(AItem* item)
 					{
 						havingItem.count += canPickNumber;
 						hasItem = true;
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->AddCount(havingItem.itemName.ToString(), havingItem.count);
+						}
+
 						break;
 					}
 				}
