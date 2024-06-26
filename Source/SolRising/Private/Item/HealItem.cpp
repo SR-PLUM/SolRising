@@ -75,3 +75,35 @@ void AHealItem::BeginPlay()
 void AHealItem::Tick(float DeltaTime)
 {
 }
+
+void AHealItem::ChangeHealItemType(E_HealItemType type)
+{
+	if (type == E_HealItemType::EHT_Bandage)
+	{
+		if (BandageMesh)
+		{
+			HealItemMesh->SetStaticMesh(BandageMesh);
+		}
+		individualWeight = 2;
+		weight = individualWeight * count;
+
+		itemImg = BandageImg;
+		itemName = FText::FromString("Bandage");
+
+		healItemType = (int32) E_HealItemType::EHT_Bandage;
+	}
+	if (type == E_HealItemType::EHT_FirstAidKit)
+	{
+		if (FirstAidKitMesh)
+		{
+			HealItemMesh->SetStaticMesh(FirstAidKitMesh);
+		}
+		individualWeight = 10;
+		weight = individualWeight * count;
+
+		itemImg = FirstAidKitImg;
+		itemName = FText::FromString("FirstAidKit");
+
+		healItemType = (int32)E_HealItemType::EHT_FirstAidKit;
+	}
+}

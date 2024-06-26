@@ -49,4 +49,7 @@ public:
 
 public:
 	int32 healItemType;
+
+	UFUNCTION()
+	void ChangeHealItemType(E_HealItemType type);
 };

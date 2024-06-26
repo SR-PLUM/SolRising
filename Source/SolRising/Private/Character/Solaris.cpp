@@ -20,6 +20,7 @@
 #include "Architecture/Door.h"
 #include "UI/Inventory.h"
 #include "Struct/ItemData.h"
+#include "UI/DropWidget.h"
 
 ASolaris::ASolaris()
 {
@@ -54,6 +55,24 @@ ASolaris::ASolaris()
 	if (InventoryBPClass.Class != nullptr)
 	{
 		InventoryWidgetClass = InventoryBPClass.Class;
+	}
+
+	ConstructorHelpers::FClassFinder<UUserWidget> DropBPClass(TEXT("/Game/Blueprints/UI/WBP_DropWidget"));
+	if (DropBPClass.Class != nullptr)
+	{
+		DropWidgetClass = DropBPClass.Class;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UClass> AmmoRef(TEXT("Blueprint'/Game/Blueprints/Item/BP_Ammo.BP_Ammo_C'"));
+	if (AmmoRef.Object)
+	{
+		AmmoBP = (UClass*)AmmoRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UClass> HealItemRef(TEXT("Blueprint'/Game/Blueprints/Item/BP_HealItem.BP_HealItem_C'"));
+	if (HealItemRef.Object)
+	{
+		HealItemBP = (UClass*)HealItemRef.Object;
 	}
 }
 
@@ -341,6 +360,136 @@ void ASolaris::Pick(AItem* pickedItem)
 		}
 
 		return;
+	}
+}
+
+void ASolaris::ShowDropWidget(FString dropedItem)
+{
+	if (!DropWidget)
+	{
+		if (DropWidgetClass)
+		{
+			DropWidget = Cast<UDropWidget>(CreateWidget(GetWorld(), DropWidgetClass));
+
+			if (DropWidget)
+			{
+				DropWidget->Owner = this;
+				DropWidget->AddToViewport();
+				DropWidget->SetVisibility(ESlateVisibility::Hidden);
+			}
+		}
+	}
+	if (DropWidget)
+	{
+		for (auto item : havingItems)
+		{
+			if (item.itemName.ToString() == dropedItem)
+			{
+				DropWidget->SetDropItem(item);
+				break;
+			}
+		}
+		DropWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void ASolaris::Drop(FItemData dropItem, int32 cnt)
+{
+	bool IsDeleted = false;
+	for (auto& item : havingItems)
+	{
+		if (item.itemName.EqualTo(dropItem.itemName))
+		{
+			if (cnt == item.count)
+			{
+				// TODO
+				// 배열에서 아이템 제거하기
+				IsDeleted = true;
+				// UI에서 위젯 제거하기
+				InventoryWidget->RemoveInventory(item);
+			}
+			else
+			{
+				// TODO
+				// 배열의 아이템 갯수 줄이기
+				item.count -= cnt;
+				// 위젯 아이템 갯수 새로고침
+				InventoryWidget->RefreshHavingItemCount(item.itemName.ToString(), item.count);
+			}
+
+			//발밑에 아이템 뿌리기
+			if (item.itemType == E_ItemType::EIT_Ammo)
+			{
+				auto World = GetWorld();
+				if (World)
+				{
+					FActorSpawnParameters SpawnParameter;
+					SpawnParameter.Owner = this;
+					SpawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+					FTransform SpawnTransform;
+					SpawnTransform.SetLocation(GetActorLocation() - 90.f);
+					SpawnTransform.SetRotation(GetActorQuat());
+
+					auto SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBP, SpawnTransform, SpawnParameter);
+					if (SpawnedAmmo)
+					{
+						SpawnedAmmo->count = cnt;
+
+						if (item.subType == (int32)E_AmmoType::EAT_5)
+						{
+							SpawnedAmmo->ChangeAmmoType(E_AmmoType::EAT_5);
+						}
+						if (item.subType == (int32)E_AmmoType::EAT_7)
+						{
+							SpawnedAmmo->ChangeAmmoType(E_AmmoType::EAT_7);
+						}
+
+						CurrentWeight -= SpawnedAmmo->weight;
+						OverlappedItem.Add(SpawnedAmmo);
+					}
+				}
+			}
+			if (item.itemType == E_ItemType::EIT_HealItem)
+			{
+				auto World = GetWorld();
+				if (World)
+				{
+					FActorSpawnParameters SpawnParameter;
+					SpawnParameter.Owner = this;
+					SpawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+					FTransform SpawnTransform;
+					SpawnTransform.SetLocation(GetActorLocation() - 90.f);
+					SpawnTransform.SetRotation(GetActorQuat());
+
+					auto SpawnedHealItem = World->SpawnActor<AHealItem>(HealItemBP, SpawnTransform, SpawnParameter);
+					if (SpawnedHealItem)
+					{
+						SpawnedHealItem->count = cnt;
+
+						if (item.subType == (int32)E_HealItemType::EHT_FirstAidKit)
+						{
+							SpawnedHealItem->ChangeHealItemType(E_HealItemType::EHT_FirstAidKit);
+						}
+						if (item.subType == (int32)E_HealItemType::EHT_Bandage)
+						{
+							SpawnedHealItem->ChangeHealItemType(E_HealItemType::EHT_Bandage);
+						}
+
+						CurrentWeight -= SpawnedHealItem->weight;
+						OverlappedItem.Add(SpawnedHealItem);
+					}
+				}
+			}
+
+			break;
+		}
+	}
+
+	if (IsDeleted)
+	{
+		havingItems.Remove(dropItem);
 	}
 }
 

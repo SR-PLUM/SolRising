@@ -27,4 +27,12 @@ struct FItemData
 	int32 count;
 	UPROPERTY()
 	float individualWeight;
+
+	bool operator== (FItemData data)
+	{
+		if (itemName.ToString() == data.itemName.ToString())
+			return true;
+		else
+			return false;
+	}
 };

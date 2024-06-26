@@ -44,6 +44,8 @@ public:
 
 	UFUNCTION()
 	void AddInventory(FItemData itemData, UTexture2D* itemImg);
+	UFUNCTION()
+	void RemoveInventory(FItemData itemData);
 
 	UFUNCTION()
 	void RefreshMainGunSlot(class AGun* gun);
