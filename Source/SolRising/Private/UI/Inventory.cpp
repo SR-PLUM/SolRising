@@ -76,6 +76,8 @@ void UInventory::AddInventory(FItemData itemData, UTexture2D* itemImg)
 	if (itemWidget && PickedItemList)
 	{
 		itemWidget->isPickable = false;
+		itemWidget->ItemName = itemData.itemName.ToString();
+		itemWidget->Owner = Owner;
 
 		if (itemWidget->ItemText)
 			itemWidget->ItemText->SetText(itemData.itemName);
@@ -86,6 +88,15 @@ void UInventory::AddInventory(FItemData itemData, UTexture2D* itemImg)
 
 		PickedItemList->AddChild(itemWidget);
 		HavingItemList.Add(itemData.itemName.ToString(),itemWidget);
+	}
+}
+
+void UInventory::RemoveInventory(FItemData itemData)
+{
+	auto removedWidget = HavingItemList.FindAndRemoveChecked(itemData.itemName.ToString());
+	if (removedWidget)
+	{
+		PickedItemList->RemoveChild(removedWidget);
 	}
 }
 

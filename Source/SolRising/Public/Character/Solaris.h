@@ -25,8 +25,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
-	virtual void Tick(float DeltaTime) override;
+public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
@@ -135,6 +134,19 @@ public:
 	TSubclassOf<UUserWidget> InventoryWidgetClass;
 	UPROPERTY()
 	class UInventory* InventoryWidget;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> DropWidgetClass;
+	UPROPERTY()
+	class UDropWidget* DropWidget;
+
+	UFUNCTION()
+	void ShowDropWidget(FString dropedItem);
+	UFUNCTION()
+	void Drop(FItemData dropItem, int32 cnt);
+
+	//TODO 아이템 스폰을 다른곳에서 해야함
+	TSubclassOf<class AAmmo> AmmoBP;
+	TSubclassOf<class AHealItem> HealItemBP;
 
 	UPROPERTY()
 	bool IsInventoryOpen = false;
