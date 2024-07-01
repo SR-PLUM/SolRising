@@ -84,12 +84,6 @@ void ASolaris::BeginPlay()
 	PickItemRange->OnComponentEndOverlap.AddDynamic(this, &ASolaris::OnItemEndOverlap);
 }
 
-void ASolaris::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 void ASolaris::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -385,6 +379,11 @@ void ASolaris::ShowDropWidget(FString dropedItem)
 		{
 			if (item.itemName.ToString() == dropedItem)
 			{
+				if (item.count == 1)
+				{
+					Drop(item, 1);
+					return;
+				}
 				DropWidget->SetDropItem(item);
 				break;
 			}
@@ -428,12 +427,19 @@ void ASolaris::Drop(FItemData dropItem, int32 cnt)
 					SpawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 					FTransform SpawnTransform;
-					SpawnTransform.SetLocation(GetActorLocation() - 90.f);
+					SpawnTransform.SetLocation(GetActorLocation() - FVector(0, 0, 90.f));
 					SpawnTransform.SetRotation(GetActorQuat());
 
 					auto SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBP, SpawnTransform, SpawnParameter);
 					if (SpawnedAmmo)
 					{
+						OverlappedItem.Remove(SpawnedAmmo);
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->RemoveList(SpawnedAmmo);
+						}
+
 						SpawnedAmmo->count = cnt;
 
 						if (item.subType == (int32)E_AmmoType::EAT_5)
@@ -446,7 +452,12 @@ void ASolaris::Drop(FItemData dropItem, int32 cnt)
 						}
 
 						CurrentWeight -= SpawnedAmmo->weight;
+
 						OverlappedItem.Add(SpawnedAmmo);
+						if (InventoryWidget)
+						{
+							InventoryWidget->AddList(SpawnedAmmo);
+						}
 					}
 				}
 			}
@@ -460,12 +471,19 @@ void ASolaris::Drop(FItemData dropItem, int32 cnt)
 					SpawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 					FTransform SpawnTransform;
-					SpawnTransform.SetLocation(GetActorLocation() - 90.f);
+					SpawnTransform.SetLocation(GetActorLocation() - FVector(0, 0, 90.f));
 					SpawnTransform.SetRotation(GetActorQuat());
 
 					auto SpawnedHealItem = World->SpawnActor<AHealItem>(HealItemBP, SpawnTransform, SpawnParameter);
 					if (SpawnedHealItem)
 					{
+						OverlappedItem.Remove(SpawnedHealItem);
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->RemoveList(SpawnedHealItem);
+						}
+
 						SpawnedHealItem->count = cnt;
 
 						if (item.subType == (int32)E_HealItemType::EHT_FirstAidKit)
@@ -478,7 +496,12 @@ void ASolaris::Drop(FItemData dropItem, int32 cnt)
 						}
 
 						CurrentWeight -= SpawnedHealItem->weight;
+
 						OverlappedItem.Add(SpawnedHealItem);
+						if (InventoryWidget)
+						{
+							InventoryWidget->AddList(SpawnedHealItem);
+						}
 					}
 				}
 			}

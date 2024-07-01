@@ -43,6 +43,7 @@ void UDropWidget::SetDropItem(FItemData Item)
 	HavingItemCnt->SetText(FText::FromString(FString::FromInt(Item.count)));
 	CntSlider->SetMaxValue(Item.count);
 	CntSlider->SetMinValue(1);
+	CntSlider->SetValue(1);
 }
 
 void UDropWidget::Confirm()
