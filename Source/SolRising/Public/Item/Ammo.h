@@ -44,7 +44,7 @@ private:
 	UTexture2D* Ammo_7Img;
 
 public:
-	int32 ammoType_gen;
+	int32 ammoType;
 
 public:
 	void ChangeAmmoType(E_AmmoType EAT);

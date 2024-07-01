@@ -31,6 +31,7 @@ private:
 	TSubclassOf<class UUserWidget> ItemWidgetClass;
 
 	TMap<class AItem*, class UItemWidget*> ItemList;
+	TMap<FString, UItemWidget*> HavingItemList;
 
 public:
 	UFUNCTION()
@@ -42,12 +43,19 @@ public:
 	void RemoveList(class AItem* item);
 
 	UFUNCTION()
-	void AddInventory(class AItem* item);
+	void AddInventory(FItemData itemData, UTexture2D* itemImg);
+	UFUNCTION()
+	void RemoveInventory(FItemData itemData);
 
 	UFUNCTION()
 	void RefreshMainGunSlot(class AGun* gun);
 	UFUNCTION()
 	void RefreshSubGunSlot(class AGun* gun);
+
+	UFUNCTION()
+	void RefreshHavingItemCount(const FString& itemName, int32 cnt);
+	UFUNCTION()
+	void RefreshPickableItemCount(AItem* Item, int32 cnt);
 
 	class ASolaris* Owner;
 };

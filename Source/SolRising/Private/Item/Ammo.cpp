@@ -13,12 +13,6 @@ AAmmo::AAmmo()
 	{
 		AmmoMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AmmoMesh"));
 
-		/*static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("AmmoMeshPath"));
-		if (Mesh.Succeeded())
-		{
-			AmmoMesh->SetStaticMesh(Mesh.Object);
-		}*/
-
 		RootComponent = AmmoMesh;
 	}
 	if (!RootComponent)
@@ -47,7 +41,7 @@ void AAmmo::BeginPlay()
 
 	count = 20;
 
-	int32 ammoType = FMath::RandRange(0, 1);
+	ammoType = FMath::RandRange(0, 1);
 
 	switch (ammoType)
 	{
@@ -88,11 +82,17 @@ void AAmmo::ChangeAmmoType(E_AmmoType EAT)
 		if(EAT_5Mesh && AmmoMesh)
 			AmmoMesh->SetStaticMesh(EAT_5Mesh);
 		weight = 0.2 * count;
+		ammoType = (int32)E_AmmoType::EAT_5;
+		itemImg = Ammo_5Img;
+		itemName = FText::FromString("5.56mm Ammo");
 	}
 	else if (EAT == E_AmmoType::EAT_7)
 	{
 		if (EAT_7Mesh && AmmoMesh)
 			AmmoMesh->SetStaticMesh(EAT_7Mesh);
 		weight = 0.4 * count;
+		ammoType = (int32)E_AmmoType::EAT_7;
+		itemImg = Ammo_7Img;
+		itemName = FText::FromString("7.62mm Ammo");
 	}
 }

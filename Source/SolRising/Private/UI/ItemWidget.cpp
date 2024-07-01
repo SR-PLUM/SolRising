@@ -22,4 +22,8 @@ void UItemWidget::PickItem()
 {
 	if(Owner && isPickable)
 		Owner->Pick(Item);
+	if (Owner && !isPickable)
+	{
+		Owner->ShowDropWidget(ItemName);
+	}
 }

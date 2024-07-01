@@ -31,6 +31,9 @@ public:
 	UPROPERTY()
 	class AItem* Item;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FString ItemName;
+
 	UFUNCTION()
 	void PickItem();
 

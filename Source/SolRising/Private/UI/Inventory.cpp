@@ -10,6 +10,7 @@
 #include "Item/Item.h"
 #include "UI/ItemWidget.h"
 #include "UI/GunSlot.h"
+#include "Struct/ItemData.h"
 
 UInventory::UInventory(const FObjectInitializer& ObjectInitializer) : UUserWidget(ObjectInitializer)
 {
@@ -47,9 +48,9 @@ void UInventory::AddList(AItem* item)
 		if(itemWidget->ItemText)
 			itemWidget->ItemText->SetText(item->itemName);
 		if (itemWidget->ItemImg)
-		{
 			itemWidget->ItemImg->SetBrushFromTexture(item->itemImg);
-		}
+		if (itemWidget->ItemCntText)
+			itemWidget->ItemCntText->SetText(FText::FromString(FString::FromInt(item->count)));
 
 		PickableItemList->AddChild(itemWidget);
 
@@ -69,19 +70,33 @@ void UInventory::RemoveList(AItem* item)
 	}
 }
 
-void UInventory::AddInventory(AItem* item)
+void UInventory::AddInventory(FItemData itemData, UTexture2D* itemImg)
 {
 	UItemWidget* itemWidget = CreateWidget<UItemWidget>(this, ItemWidgetClass);
 	if (itemWidget && PickedItemList)
 	{
-		itemWidget->Item = item;
-		itemWidget->Owner = Owner;
 		itemWidget->isPickable = false;
+		itemWidget->ItemName = itemData.itemName.ToString();
+		itemWidget->Owner = Owner;
 
 		if (itemWidget->ItemText)
-			itemWidget->ItemText->SetText(item->itemName);
+			itemWidget->ItemText->SetText(itemData.itemName);
+		if (itemWidget->ItemImg)
+			itemWidget->ItemImg->SetBrushFromTexture(itemImg);
+		if (itemWidget->ItemCntText)
+			itemWidget->ItemCntText->SetText(FText::FromString(FString::FromInt(itemData.count)));
 
 		PickedItemList->AddChild(itemWidget);
+		HavingItemList.Add(itemData.itemName.ToString(),itemWidget);
+	}
+}
+
+void UInventory::RemoveInventory(FItemData itemData)
+{
+	auto removedWidget = HavingItemList.FindAndRemoveChecked(itemData.itemName.ToString());
+	if (removedWidget)
+	{
+		PickedItemList->RemoveChild(removedWidget);
 	}
 }
 
@@ -93,4 +108,22 @@ void UInventory::RefreshMainGunSlot(AGun* gun)
 void UInventory::RefreshSubGunSlot(AGun* gun)
 {
 	SubGunSlot->RefreshGunSlot(gun);
+}
+
+void UInventory::RefreshPickableItemCount(AItem* Item, int32 cnt)
+{
+	auto updateItem = ItemList.FindRef(Item);
+	if (updateItem)
+	{
+		updateItem->ItemCntText->SetText(FText::FromString(FString::FromInt(cnt)));
+	}
+}
+
+void UInventory::RefreshHavingItemCount(const FString& itemName, int32 cnt)
+{
+	auto updateItem = HavingItemList.FindRef(itemName);
+	if (updateItem)
+	{
+		updateItem->ItemCntText->SetText(FText::FromString(FString::FromInt(cnt)));
+	}
 }

@@ -19,6 +19,8 @@
 #include "Item/HealItem.h"
 #include "Architecture/Door.h"
 #include "UI/Inventory.h"
+#include "Struct/ItemData.h"
+#include "UI/DropWidget.h"
 
 ASolaris::ASolaris()
 {
@@ -54,6 +56,24 @@ ASolaris::ASolaris()
 	{
 		InventoryWidgetClass = InventoryBPClass.Class;
 	}
+
+	ConstructorHelpers::FClassFinder<UUserWidget> DropBPClass(TEXT("/Game/Blueprints/UI/WBP_DropWidget"));
+	if (DropBPClass.Class != nullptr)
+	{
+		DropWidgetClass = DropBPClass.Class;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UClass> AmmoRef(TEXT("Blueprint'/Game/Blueprints/Item/BP_Ammo.BP_Ammo_C'"));
+	if (AmmoRef.Object)
+	{
+		AmmoBP = (UClass*)AmmoRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UClass> HealItemRef(TEXT("Blueprint'/Game/Blueprints/Item/BP_HealItem.BP_HealItem_C'"));
+	if (HealItemRef.Object)
+	{
+		HealItemBP = (UClass*)HealItemRef.Object;
+	}
 }
 
 void ASolaris::BeginPlay()
@@ -62,12 +82,6 @@ void ASolaris::BeginPlay()
 	
 	PickItemRange->OnComponentBeginOverlap.AddDynamic(this, &ASolaris::OnItemBeginOverlap);
 	PickItemRange->OnComponentEndOverlap.AddDynamic(this, &ASolaris::OnItemEndOverlap);
-}
-
-void ASolaris::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
 void ASolaris::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -226,7 +240,7 @@ void ASolaris::Pick(AItem* pickedItem)
 
 		UE_LOG(LogTemp, Warning, TEXT("조끼 방어력 : %f"), vest->GetDefence());
 
-		vest->Destroy();
+		vest->Destroy();					//Destroy 하지 않기
 		OverlappedItem.Remove(vest);
 
 		return;
@@ -239,23 +253,45 @@ void ASolaris::Pick(AItem* pickedItem)
 		if (CanPick(ammo->weight))
 		{
 			CurrentWeight += ammo->weight;
-			//currentAmmoCount[ammo->ammoType_gen] += ammo->count;
+			bool hasItem = false;
 
-			if (havingItemsName.Find(ammo->itemName.ToString()) == INDEX_NONE)
+			for (auto& item : havingItems)
 			{
-				havingItemsName.Add(ammo->itemName.ToString());
-				havingItemsCount.Add(0);
+				if (item.itemType == E_ItemType::EIT_Ammo)
+				{
+					if (item.subType == ammo->ammoType)
+					{
+						item.count += ammo->count;
+						hasItem = true;
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->RefreshHavingItemCount(item.itemName.ToString(), item.count);
+						}
+
+						break;
+					}
+				}
 			}
 
-			havingItemsCount[havingItemsName.Find(ammo->itemName.ToString())] += ammo->count;
+			if (hasItem == false)
+			{
+				FItemData tmpItem;
+				tmpItem.count = pickedItem->count;
+				tmpItem.individualWeight = pickedItem->individualWeight;
+				tmpItem.itemType = E_ItemType::EIT_Ammo;
+				tmpItem.subType = ammo->ammoType;
+				tmpItem.itemName = ammo->itemName;
+				havingItems.Add(tmpItem);
+
+				if (InventoryWidget)
+				{
+					InventoryWidget->AddInventory(tmpItem, ammo->itemImg);
+				}
+			}
 
 			ammo->Destroy();
 			OverlappedItem.Remove(ammo);
-
-			if (InventoryWidget)
-			{
-				InventoryWidget->AddInventory(ammo);
-			}
 		}
 		else
 		{
@@ -272,13 +308,42 @@ void ASolaris::Pick(AItem* pickedItem)
 		{
 			CurrentWeight += healItem->weight;
 
-			if (havingItemsName.Find(healItem->itemName.ToString()) == INDEX_NONE)
+			bool hasItem = false;
+
+			for (auto& item : havingItems)
 			{
-				havingItemsName.Add(healItem->itemName.ToString());
-				havingItemsCount.Add(0);
+				if (item.itemType == E_ItemType::EIT_HealItem)
+				{
+					if (item.subType == healItem->healItemType)
+					{
+						item.count += healItem->count;
+						hasItem = true;
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->RefreshHavingItemCount(item.itemName.ToString(), item.count);
+						}
+
+						break;
+					}
+				}
 			}
 
-			havingItemsCount[havingItemsName.Find(healItem->itemName.ToString())] += healItem->count;
+			if (hasItem == false)
+			{
+				FItemData tmpItem;
+				tmpItem.count = pickedItem->count;
+				tmpItem.individualWeight = pickedItem->individualWeight;
+				tmpItem.itemType = E_ItemType::EIT_HealItem;
+				tmpItem.subType = healItem->healItemType;
+				tmpItem.itemName = healItem->itemName;
+				havingItems.Add(tmpItem);
+
+				if (InventoryWidget)
+				{
+					InventoryWidget->AddInventory(tmpItem, healItem->itemImg);
+				}
+			}
 
 			healItem->Destroy();
 			OverlappedItem.Remove(healItem);
@@ -289,6 +354,165 @@ void ASolaris::Pick(AItem* pickedItem)
 		}
 
 		return;
+	}
+}
+
+void ASolaris::ShowDropWidget(FString dropedItem)
+{
+	if (!DropWidget)
+	{
+		if (DropWidgetClass)
+		{
+			DropWidget = Cast<UDropWidget>(CreateWidget(GetWorld(), DropWidgetClass));
+
+			if (DropWidget)
+			{
+				DropWidget->Owner = this;
+				DropWidget->AddToViewport();
+				DropWidget->SetVisibility(ESlateVisibility::Hidden);
+			}
+		}
+	}
+	if (DropWidget)
+	{
+		for (auto item : havingItems)
+		{
+			if (item.itemName.ToString() == dropedItem)
+			{
+				if (item.count == 1)
+				{
+					Drop(item, 1);
+					return;
+				}
+				DropWidget->SetDropItem(item);
+				break;
+			}
+		}
+		DropWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void ASolaris::Drop(FItemData dropItem, int32 cnt)
+{
+	bool IsDeleted = false;
+	for (auto& item : havingItems)
+	{
+		if (item.itemName.EqualTo(dropItem.itemName))
+		{
+			if (cnt == item.count)
+			{
+				// TODO
+				// 배열에서 아이템 제거하기
+				IsDeleted = true;
+				// UI에서 위젯 제거하기
+				InventoryWidget->RemoveInventory(item);
+			}
+			else
+			{
+				// TODO
+				// 배열의 아이템 갯수 줄이기
+				item.count -= cnt;
+				// 위젯 아이템 갯수 새로고침
+				InventoryWidget->RefreshHavingItemCount(item.itemName.ToString(), item.count);
+			}
+
+			//발밑에 아이템 뿌리기
+			if (item.itemType == E_ItemType::EIT_Ammo)
+			{
+				auto World = GetWorld();
+				if (World)
+				{
+					FActorSpawnParameters SpawnParameter;
+					SpawnParameter.Owner = this;
+					SpawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+					FTransform SpawnTransform;
+					SpawnTransform.SetLocation(GetActorLocation() - FVector(0, 0, 90.f));
+					SpawnTransform.SetRotation(GetActorQuat());
+
+					auto SpawnedAmmo = World->SpawnActor<AAmmo>(AmmoBP, SpawnTransform, SpawnParameter);
+					if (SpawnedAmmo)
+					{
+						OverlappedItem.Remove(SpawnedAmmo);
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->RemoveList(SpawnedAmmo);
+						}
+
+						SpawnedAmmo->count = cnt;
+
+						if (item.subType == (int32)E_AmmoType::EAT_5)
+						{
+							SpawnedAmmo->ChangeAmmoType(E_AmmoType::EAT_5);
+						}
+						if (item.subType == (int32)E_AmmoType::EAT_7)
+						{
+							SpawnedAmmo->ChangeAmmoType(E_AmmoType::EAT_7);
+						}
+
+						CurrentWeight -= SpawnedAmmo->weight;
+
+						OverlappedItem.Add(SpawnedAmmo);
+						if (InventoryWidget)
+						{
+							InventoryWidget->AddList(SpawnedAmmo);
+						}
+					}
+				}
+			}
+			if (item.itemType == E_ItemType::EIT_HealItem)
+			{
+				auto World = GetWorld();
+				if (World)
+				{
+					FActorSpawnParameters SpawnParameter;
+					SpawnParameter.Owner = this;
+					SpawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+					FTransform SpawnTransform;
+					SpawnTransform.SetLocation(GetActorLocation() - FVector(0, 0, 90.f));
+					SpawnTransform.SetRotation(GetActorQuat());
+
+					auto SpawnedHealItem = World->SpawnActor<AHealItem>(HealItemBP, SpawnTransform, SpawnParameter);
+					if (SpawnedHealItem)
+					{
+						OverlappedItem.Remove(SpawnedHealItem);
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->RemoveList(SpawnedHealItem);
+						}
+
+						SpawnedHealItem->count = cnt;
+
+						if (item.subType == (int32)E_HealItemType::EHT_FirstAidKit)
+						{
+							SpawnedHealItem->ChangeHealItemType(E_HealItemType::EHT_FirstAidKit);
+						}
+						if (item.subType == (int32)E_HealItemType::EHT_Bandage)
+						{
+							SpawnedHealItem->ChangeHealItemType(E_HealItemType::EHT_Bandage);
+						}
+
+						CurrentWeight -= SpawnedHealItem->weight;
+
+						OverlappedItem.Add(SpawnedHealItem);
+						if (InventoryWidget)
+						{
+							InventoryWidget->AddList(SpawnedHealItem);
+						}
+					}
+				}
+			}
+
+			break;
+		}
+	}
+
+	if (IsDeleted)
+	{
+		havingItems.Remove(dropItem);
 	}
 }
 
@@ -398,16 +622,94 @@ void ASolaris::PartialPick(AItem* item)
 	{
 		CurrentWeight += item->individualWeight * canPickNumber;
 
-		if (havingItemsName.Find(item->itemName.ToString()) == INDEX_NONE)
+		AHealItem* healItem = Cast<AHealItem>(item);
+		if (healItem)
 		{
-			havingItemsName.Add(item->itemName.ToString());
-			havingItemsCount.Add(0);
+			bool hasItem = false;
+
+			for (auto& havingItem : havingItems)
+			{
+				if (havingItem.itemType == E_ItemType::EIT_HealItem)
+				{
+					if (havingItem.subType == healItem->healItemType)
+					{
+						havingItem.count += canPickNumber;
+						hasItem = true;
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->RefreshHavingItemCount(havingItem.itemName.ToString(), havingItem.count);
+						}
+
+						break;
+					}
+				}
+			}
+
+			if (hasItem == false)
+			{
+				FItemData tmpItem;
+				tmpItem.count = canPickNumber;
+				tmpItem.individualWeight = item->individualWeight;
+				tmpItem.itemType = E_ItemType::EIT_HealItem;
+				tmpItem.subType = healItem->healItemType;
+				tmpItem.itemName = healItem->itemName;
+				havingItems.Add(tmpItem);
+
+				if (InventoryWidget)
+				{
+					InventoryWidget->AddInventory(tmpItem, item->itemImg);
+				}
+			}
 		}
 
-		havingItemsCount[havingItemsName.Find(item->itemName.ToString())] += canPickNumber;
+		AAmmo* ammo = Cast<AAmmo>(item);
+		if (ammo)
+		{
+			bool hasItem = false;
+
+			for (auto& havingItem : havingItems)
+			{
+				if (havingItem.itemType == E_ItemType::EIT_Ammo)
+				{
+					if (havingItem.subType == ammo->ammoType)
+					{
+						havingItem.count += canPickNumber;
+						hasItem = true;
+
+						if (InventoryWidget)
+						{
+							InventoryWidget->RefreshHavingItemCount(havingItem.itemName.ToString(), havingItem.count);
+						}
+
+						break;
+					}
+				}
+			}
+
+			if (hasItem == false)
+			{
+				FItemData tmpItem;
+				tmpItem.count = canPickNumber;
+				tmpItem.individualWeight = item->individualWeight;
+				tmpItem.itemType = E_ItemType::EIT_Ammo;
+				tmpItem.subType = ammo->ammoType;
+				tmpItem.itemName = ammo->itemName;
+				havingItems.Add(tmpItem);
+
+				if (InventoryWidget)
+				{
+					InventoryWidget->AddInventory(tmpItem, item->itemImg);
+				}
+			}
+		}
 
 		item->count -= canPickNumber;
 		item->weight = item->individualWeight * item->count;
+		if (InventoryWidget)
+		{
+			InventoryWidget->RefreshPickableItemCount(item, item->count);
+		}
 	}
 	else
 	{
@@ -609,12 +911,21 @@ void ASolaris::HealHP(float AmountOfRecovery)
 	}	
 }
 
-void ASolaris::UseItem(AItem* item)
+void ASolaris::UseItem(FItemData itemData)
 {
-	AHealItem* healItem = Cast<AHealItem>(item);
-	if (healItem)
+	if (itemData.itemType == E_ItemType::EIT_HealItem)
 	{
-		HealHP(healItem->GetAmountOfRecovery());	
+		if (itemData.subType == (int)E_HealItemType::EHT_FirstAidKit)
+		{
+			HealHP(AHealItem::firstAidKitRecovery);
+		}
+		else if (itemData.subType == (int)E_HealItemType::EHT_Bandage)
+		{
+			HealHP(AHealItem::bandageRecovery);
+		}
+
+		itemData.count -= 1;
+		CurrentWeight -= itemData.individualWeight;
 	}
 }
 
