@@ -74,6 +74,25 @@ ASolaris::ASolaris()
 	{
 		HealItemBP = (UClass*)HealItemRef.Object;
 	}
+
+	//Create Inventory
+	if (InventoryWidgetClass)
+	{
+		InventoryWidget = Cast<UInventory>(CreateWidget(GetWorld(), InventoryWidgetClass));
+		if (InventoryWidget)
+		{
+			InventoryWidget->Owner = this;
+
+			for (auto item : OverlappedItem)
+			{
+				InventoryWidget->AddList(item);
+			}
+
+			InventoryWidget->AddToViewport();
+			InventoryWidget->SetVisibility(ESlateVisibility::Hidden);
+			IsInventoryOpen = false;
+		}
+	}
 }
 
 void ASolaris::BeginPlay()
@@ -560,7 +579,7 @@ bool ASolaris::Inventory()
 
 				InventoryWidget->AddToViewport();
 				IsInventoryOpen = true;
-
+				
 				return true;
 			}
 		}
