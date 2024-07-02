@@ -535,7 +535,7 @@ void ASolaris::Prone()
 		GroundPose = E_GroundPose::EGP_Standing;
 		GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	}
-	else
+	else if(CurrentGun)
 	{
 		GroundPose = E_GroundPose::EGP_Prone;
 		GetCharacterMovement()->MaxWalkSpeed = 200.f;
