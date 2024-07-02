@@ -822,7 +822,7 @@ FRotator ASolaris::GetCameraRotation()
 
 bool ASolaris::LineTracingMouse(FHitResult& CameraHit)
 {
-	const float TraceDistance = 10000.f;
+	const float TraceDistance = 500.f;
 	UWorld* World = GetWorld();
 
 	if (World)
