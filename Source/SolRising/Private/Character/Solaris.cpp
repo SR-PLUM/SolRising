@@ -40,7 +40,7 @@ ASolaris::ASolaris()
 	ViewCamera->SetupAttachment(CameraBoom);
 
 	FPCameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("FPCameraBoom"));
-	FPCameraBoom->SetupAttachment(GetMesh());
+	FPCameraBoom->SetupAttachment(GetRootComponent());
 	FPCameraBoom->TargetArmLength = 10.f;
 
 	FPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FPCamera"));
@@ -139,12 +139,31 @@ void ASolaris::Turn(float Value)
 {
 	AddControllerYawInput(Value);
 	//UE_LOG(LogTemp,Warning,TEXT("%f"),GetController()->GetControlRotation().Yaw)
+	if (IsAiming)
+	{
+		SetActorRotation(FRotator(GetActorRotation().Pitch, GetControlRotation().Yaw, GetActorRotation().Roll));
+	}
 }
 
 void ASolaris::LookUp(float Value)
 {
+	if (GetController())
+	{
+		auto curPitch = GetController()->GetControlRotation().Pitch;
+		if (curPitch <= 295.f && curPitch >= 180.f)
+		{
+			if (Value > 0)
+				return;
+		}
+		if (curPitch >= 45.f && curPitch <= 180.f)
+		{
+			if (Value < 0)
+				return;
+		}
+	}
+
 	AddControllerPitchInput(Value);
-	//UE_LOG(LogTemp, Warning, TEXT("%f"), GetController()->GetControlRotation().Pitch)
+	UE_LOG(LogTemp, Warning, TEXT("%f"), GetController()->GetControlRotation().Pitch)
 }
 
 void ASolaris::Interaction()
