@@ -50,7 +50,12 @@ void UInventory::AddList(AItem* item)
 		if (itemWidget->ItemImg)
 			itemWidget->ItemImg->SetBrushFromTexture(item->itemImg);
 		if (itemWidget->ItemCntText)
-			itemWidget->ItemCntText->SetText(FText::FromString(FString::FromInt(item->count)));
+		{
+			if(item->count == 0)
+				itemWidget->ItemCntText->SetText(FText::FromString(" "));
+			else
+				itemWidget->ItemCntText->SetText(FText::FromString(FString::FromInt(item->count)));
+		}
 
 		PickableItemList->AddChild(itemWidget);
 

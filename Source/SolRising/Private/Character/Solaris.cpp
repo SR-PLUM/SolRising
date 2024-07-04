@@ -40,7 +40,7 @@ ASolaris::ASolaris()
 	ViewCamera->SetupAttachment(CameraBoom);
 
 	FPCameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("FPCameraBoom"));
-	FPCameraBoom->SetupAttachment(GetMesh());
+	FPCameraBoom->SetupAttachment(GetRootComponent());
 	FPCameraBoom->TargetArmLength = 10.f;
 
 	FPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FPCamera"));
@@ -73,6 +73,25 @@ ASolaris::ASolaris()
 	if (HealItemRef.Object)
 	{
 		HealItemBP = (UClass*)HealItemRef.Object;
+	}
+
+	//Create Inventory
+	if (InventoryWidgetClass)
+	{
+		InventoryWidget = Cast<UInventory>(CreateWidget(GetWorld(), InventoryWidgetClass));
+		if (InventoryWidget)
+		{
+			InventoryWidget->Owner = this;
+
+			for (auto item : OverlappedItem)
+			{
+				InventoryWidget->AddList(item);
+			}
+
+			InventoryWidget->AddToViewport();
+			InventoryWidget->SetVisibility(ESlateVisibility::Hidden);
+			IsInventoryOpen = false;
+		}
 	}
 }
 
@@ -120,12 +139,31 @@ void ASolaris::Turn(float Value)
 {
 	AddControllerYawInput(Value);
 	//UE_LOG(LogTemp,Warning,TEXT("%f"),GetController()->GetControlRotation().Yaw)
+	if (IsAiming)
+	{
+		SetActorRotation(FRotator(GetActorRotation().Pitch, GetControlRotation().Yaw, GetActorRotation().Roll));
+	}
 }
 
 void ASolaris::LookUp(float Value)
 {
+	if (GetController())
+	{
+		auto curPitch = GetController()->GetControlRotation().Pitch;
+		if (curPitch <= 295.f && curPitch >= 180.f)
+		{
+			if (Value > 0)
+				return;
+		}
+		if (curPitch >= 45.f && curPitch <= 180.f)
+		{
+			if (Value < 0)
+				return;
+		}
+	}
+
 	AddControllerPitchInput(Value);
-	//UE_LOG(LogTemp, Warning, TEXT("%f"), GetController()->GetControlRotation().Pitch)
+	UE_LOG(LogTemp, Warning, TEXT("%f"), GetController()->GetControlRotation().Pitch)
 }
 
 void ASolaris::Interaction()
@@ -535,7 +573,7 @@ void ASolaris::Prone()
 		GroundPose = E_GroundPose::EGP_Standing;
 		GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	}
-	else
+	else if(CurrentGun)
 	{
 		GroundPose = E_GroundPose::EGP_Prone;
 		GetCharacterMovement()->MaxWalkSpeed = 200.f;
@@ -560,7 +598,7 @@ bool ASolaris::Inventory()
 
 				InventoryWidget->AddToViewport();
 				IsInventoryOpen = true;
-
+				
 				return true;
 			}
 		}
